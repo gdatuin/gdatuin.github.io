@@ -8,45 +8,11 @@ require 'connect.php';
 // Get product ID from URL
 $product_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-// Initialize a variable to store product data
+// Initialize variables
 $product = [];
-
-// Initialize a variable for stock status
 $stockStatus = "IN STOCK";
-
 $averageRating = 0;
-
-// Try to fetch the average rating from the database
-try {
-    $ratingStmt = $db->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = :product_id");
-    $ratingStmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
-    $ratingStmt->execute();
-
-    if ($ratingStmt->rowCount() > 0) {
-        $ratingResult = $ratingStmt->fetch(PDO::FETCH_ASSOC);
-        $averageRating = round($ratingResult['average_rating'], 1); // Round to 1 decimal place
-    }
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-
-$starRatingHtml = '';
-$fullStars = floor($averageRating);
-$halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
-$emptyStars = 5 - $fullStars - $halfStar;
-
-// Echo full stars
-for ($i = 0; $i < $fullStars; $i++) {
-    $starRatingHtml .= '&#9733;'; // Unicode character for full star
-}
-// Echo half star if needed
-if ($halfStar) {
-    $starRatingHtml .= '&#9734;'; // Unicode character for half star (use your preferred half-star character)
-}
-// Echo empty stars
-for ($i = 0; $i < $emptyStars; $i++) {
-    $starRatingHtml .= '&#9734;'; // Unicode character for empty star
-}
+$reviews = []; // Initialize as an empty array
 
 // Try to fetch the product from the database
 try {
@@ -59,11 +25,14 @@ try {
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
         
         // Set stock status based on inventory count
-        if (($product['inventory_count'] < 1) && (isset($_SESSION['role']) && ($_SESSION['role'] == 'customer' ) || (($_SESSION['role'] == 'content_manager' )))){
+        if ($product['inventory_count'] < 1) {
             $stockStatus = "OUT OF STOCK";
-            
-        } else if ((isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'sales_manager'))) {
-            $stockStatus = "Available: " . $product['inventory_count'];
+        } else {
+            $stockStatus = "IN STOCK";
+            // Check if the logged-in user is an admin or sales_manager, then display inventory count
+            if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'sales_manager')) {
+                $stockStatus .= " (Available: " . $product['inventory_count'] . ")";
+            }
         }
     } else {
         $stockStatus = "OUT OF STOCK";
@@ -72,6 +41,38 @@ try {
     echo "Error: " . $e->getMessage();
 }
 
+// Fetch reviews and usernames
+try {
+    $reviewStmt = $db->prepare("
+        SELECT r.rating, r.review_text, r.guest_name, r.review_image, u.username
+        FROM reviews r
+        LEFT JOIN users u ON r.user_id = u.user_id
+        WHERE r.product_id = :product_id
+        ORDER BY r.review_id DESC
+    ");
+    $reviewStmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+    $reviewStmt->execute();
+    $reviews = $reviewStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error fetching reviews: " . $e->getMessage();
+}
+
+// Fetch the average rating
+try {
+    $ratingStmt = $db->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = :product_id");
+    $ratingStmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+    $ratingStmt->execute();
+
+    if ($ratingStmt->rowCount() > 0) {
+        $ratingResult = $ratingStmt->fetch(PDO::FETCH_ASSOC);
+        $averageRating = round($ratingResult['average_rating'], 1); // Round to 1 decimal place
+    }
+} catch (PDOException $e) {
+    echo "Error fetching average rating: " . $e->getMessage();
+}
+
+// Generate star rating HTML
+$starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9734;', 5 - floor($averageRating));
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +91,8 @@ try {
 </head>
 <body id ="productPage">
 
-    <!-- Include header -->
+
+        <div class="elfsight-app-4114d580-7b3f-4432-b30a-d4699aac173d"></div>
     <?php include 'header.php'; ?>
 
     <main class="product-page">
@@ -119,12 +121,60 @@ try {
                     <?php endif; ?>
                 </div>
             </div>
+
+
+             <section class="product-reviews">
+            <h2>Customer Reviews</h2>
+            <?php foreach ($reviews as $review): ?>
+                <div class="review-item">
+                    <p>Reviewer: <?= !empty($review['username']) ? htmlspecialchars($review['username'], ENT_QUOTES, 'UTF-8') : htmlspecialchars($review['guest_name'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <p>Rating: <?= str_repeat('&#9733;', (int)$review['rating']) . str_repeat('&#9734;', 5 - (int)$review['rating']); ?></p>
+                    <p><?= htmlspecialchars($review['review_text'], ENT_QUOTES, 'UTF-8') ?></p>
+                     <?php if (!empty($review['review_image'])): ?>
+            <img class="review-image" src="review_images/<?= htmlspecialchars($review['review_image']) ?>" alt="Review image">
+        <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+                
+
+                <form action="submit_review.php" method="post" id="submit-review-form" enctype="multipart/form-data">
+                     <?php if (!isset($_SESSION['user_id'])): // Check if user is not logged in ?>
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="guest_name" value="<?= htmlspecialchars($formData['guest_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+    <?php endif; ?>
+                    
+                    <label for="rating">Your Rating:</label>
+                    <select id="rating" name="rating" required>
+
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <option value="<?= $i ?>" <?= (isset($formData['rating']) && $formData['rating'] == $i) ? 'selected' : '' ?>>
+                                <?= str_repeat('&#9733;', $i) . str_repeat('&#9734;', 5 - $i) ?>
+                            </option>
+                        <?php endfor; ?>
+                    </select>
+                    
+                    <label for="review_text">Your Review:</label>
+                    <textarea id="review_text" name="review_text" required><?= htmlspecialchars($formData['review_text'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                    
+                    <label for="review_image">Upload Image:</label>
+                    <input type="file" id="review_image" name="review_image" accept="image/*">
+                    
+                    <!-- <label for="captcha">Enter CAPTCHA:</label>
+                    <img src="captcha.php" alt="CAPTCHA" style="border: 1px solid #000; margin-top: 5px;">
+                    <input type="text" id="captcha" name="captcha" required> -->
+                    
+                    <button type="submit" name="submit_review">Submit Review</button>
+                    
+                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_id, ENT_QUOTES, 'UTF-8') ?>">
+                </form>
+            </section>
         <?php else: ?>
             <p>Product not found.</p>
         <?php endif; ?>
+
+    
     </main>
 
-    <!-- Include footer -->
     <?php include 'footer.php'; ?>
 
 
