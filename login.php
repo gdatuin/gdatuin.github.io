@@ -5,14 +5,17 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     header('Location: profile.php');
     exit;
 }
-else {
 
-// Include the database connection
+else 
+{
+
 include 'connect.php';
 
 $usernameError = '';
 $passwordError = '';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") 
+{
     $form_username = trim($_POST['username']);
     $form_password = trim($_POST['password']);
 
@@ -20,31 +23,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':username', $form_username, PDO::PARAM_STR);
     $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
+    if ($stmt->rowCount() > 0) 
+    {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Verify password
-        if ($form_password === $row['password']) {
-            // Set session variables
+        
+        if ($form_password === $row['password']) 
+        {
+            
             $_SESSION['loggedin'] = true;
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['username'] = $row['username'];
             $_SESSION['role'] = $row['role'];
 
-            // Redirect user based on role
-            if ($_SESSION['role'] == 'admin') {
-                header("location: admin_dashboard.php"); // Redirect to admin dashboard
+            
+           /*  if ($_SESSION['role'] == 'admin') 
+            {
+                header("location: admin_dashboard.php"); 
                 exit;
-            } else {
-                header("location: index.php"); // Redirect to homepage or user dashboard
+            } 
+            else 
+            { */
+                echo "<script>alert('Login Successful!'); window.location.href='index.php';</script>";               
                 exit;
-            }
-        } else {
-        $passwordError = "Invalid password.";
+            // }
+        } 
+        else 
+        {
+            $passwordError = "Invalid password.";
+        }
+    } 
+    else 
+    {
+        $usernameError = "Username does not exist.";
     }
-} else {
-    $usernameError = "Username does not exist.";
-}
 }
 }
 ?>
@@ -93,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php endif; ?>
 </li>
     </ul>
+
         <p class="center">
         <button type="submit" id="login_btn" class="formButton">Login</button>
         <a href="register.php" id="newuser_btn">New User?</a>

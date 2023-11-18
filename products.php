@@ -1,20 +1,22 @@
 <?php
-// Include database connection file
+session_start();
+
 include_once 'connect.php';
-// Get sort parameter from URL
+
 $sortOption = filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING);
 
-// Define default sort and order
-$sort = 'product_name'; // default sort field
-$order = 'asc'; // default order
 
-// Map sort options to fields and order
+$sort = 'product_name'; 
+$order = 'asc'; 
+$searchTerm = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING);
+
+
 $sortOptions = [
     'product_name_asc' => ['field' => 'product_name', 'order' => 'asc'],
     'product_name_desc' => ['field' => 'product_name', 'order' => 'desc'],
     'price_asc' => ['field' => 'price', 'order' => 'asc'],
-    'price_desc' => ['field' => 'price', 'order' => 'desc'],
-    // Add similar mappings for ratings if available
+    'price_desc' => ['field' => 'price', 'order' => 'desc']
+
 ];
 
 if (array_key_exists($sortOption, $sortOptions)) {
@@ -22,14 +24,23 @@ if (array_key_exists($sortOption, $sortOptions)) {
     $order = $sortOptions[$sortOption]['order'];
 }
 
-// SQL query
+
 try {
-    $sql = "SELECT product_id, product_name, description, price, inventory_count, image FROM products ORDER BY $sort $order";
-    $stmt = $db->query($sql);
+    $sql = "SELECT product_id, product_name, description, price, inventory_count, image FROM products";
+    if ($searchTerm) {
+        $sql .= " WHERE product_name LIKE :searchTerm";
+    }
+    $sql .= " ORDER BY $sort $order";
+
+    $stmt = $db->prepare($sql);
+    if ($searchTerm) {
+        $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%', PDO::PARAM_STR);
+    }
+    $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
-    $products = []; // Set products to an empty array on error.
+    $products = [];
 }
 ?>
 
@@ -61,15 +72,26 @@ try {
             <h1>PRODUCTS</h1>
         </div>
 
+        <div class="search-form-container">
+        <form action="" method="get">
+            <label for="search">Search:</label>
+            <input type="text" name="search" id="search" value="<?= htmlspecialchars($searchTerm) ?>">
+            <input type="submit" value="Search">
+        </form>
+</div>
+
+        <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['admin', 'content_manager', 'sales_manager'])): ?>
+        <a href="add-product.php" class="add-product-button">Add Product</a>
+    <?php endif; ?>
+    
         <div class="sorting-options">
     <form action="" method="get">
         <label for="sorting">Sort by:</label>
         <select name="sort" id="sorting" onchange="this.form.submit()">
-            <option value="product_name_asc">Name (A-Z)</option>
-            <option value="product_name_desc">Name (Z-A)</option>
-            <option value="price_asc">Price (Low to High)</option>
-            <option value="price_desc">Price (High to Low)</option>
-            <!-- Add similar options for ratings if available -->
+            <option value="product_name_asc" <?php if ($sortOption == 'product_name_asc') echo 'selected'; ?>>Name (A-Z)</option>
+            <option value="product_name_desc" <?php if ($sortOption == 'product_name_desc') echo 'selected'; ?>>Name (Z-A)</option>
+            <option value="price_asc" <?php if ($sortOption == 'price_asc') echo 'selected'; ?>>Price (Low to High)</option>
+            <option value="price_desc" <?php if ($sortOption == 'price_desc') echo 'selected'; ?>>Price (High to Low)</option>
         </select>
     </form>
 </div>
@@ -81,6 +103,8 @@ try {
                     <div class="productImage">
                         <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>">
                         <img src="images/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+                        </a>
+            </div>
                     <div class="productDetails">
                         <p>
                         <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>"><?= htmlspecialchars($product['product_name']) ?></a>
@@ -95,14 +119,5 @@ try {
     <?php include 'footer.php'; ?>
 </body>
 
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        var selectElement = document.getElementById('sorting');
-
-        selectElement.addEventListener('change', function () {
-            this.form.submit(); // Submit the form when the selection changes
-        });
-    });
-</script>
 
 </html>

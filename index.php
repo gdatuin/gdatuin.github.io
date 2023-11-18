@@ -1,11 +1,19 @@
-<!--------w-----------
+<?php
 
-    Project 4
-    Name: Gabriel Datuin
-    Date: 
-    Description: Displays the homepage of a clothing website.
 
---------------------->
+
+require 'connect.php';
+
+try {
+    $stmt = $db->prepare("SELECT * FROM products ORDER BY product_id DESC LIMIT 3");
+    $stmt->execute();
+    $newestProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+    $newestProducts = [];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,25 +71,20 @@
         
         
             <div class="newestProductsItems">
-
-            <div class="newItem1">
-            <a href="#"><img src="images/blue-cow-top.png" alt="Wavy Crop Top"></a>
-            <p><a href="#">Wavy Crop Top</a><br>$17.99</p>
-            </div>
-            
-            <div class="newItem2">
-            <a href="#"><img src="images/heart-top.png" alt="Cropped Heart Tank Top"></a>
-            <p><a href="#">Cropped Heart Tank Top</a><br>$12.99</p>
-            </div>
-
-
-            <div class="newItem3">
-            <a href="#"><img src="images/blue-vest.png" alt="Pastel Blue Vest"></a>
-            <p><a href="#">Pastel Blue Vest</a><br>$19.99</p>
-            </div>
-
-
+    <?php foreach ($newestProducts as $product): ?>
+        <div class="newItem">
+            <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>">
+                <img src="images/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+            </a>
+            <p>
+                <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>">
+                    <?= htmlspecialchars($product['product_name']) ?>
+                </a>
+                <br>$<?= htmlspecialchars(number_format($product['price'], 2)) ?>
+            </p>
         </div>
+    <?php endforeach; ?>
+</div>
        </main>
 
         <?php include 'footer.php'; ?>

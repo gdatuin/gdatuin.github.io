@@ -1,6 +1,6 @@
 /********w************
     
-    Project 4 Styles
+    Project 6 Styles
     Name: Gabriel Datuin
     Date: 
     Description: 
@@ -18,6 +18,7 @@ body{
     
 }
 
+
 body#index{
     background-image: url("images/background7.jpg");
 
@@ -34,6 +35,7 @@ body#contact-us{
 body#login{
    
     background-image: url("images/background4.png");
+
  
 }
 
@@ -54,6 +56,12 @@ body#edit-product
 {
     
     background-image: url("images/product-background.jpg");
+}
+
+body#add-product
+{
+    
+    background-image: url("images/background6.png");
 }
 
 
@@ -467,11 +475,10 @@ div#heading h1
 
 .error-message {
   font-family: 'Bruno Ace', sans-serif;
-  color: #a71919; /* This is the color used for the <p> in your form */
-  font-size: 1em; /* Adjust the font-size to fit well with your form */
-  display: block; /* Or inline-block, depending on your layout */
-  margin-left: 10px; /* Space it a bit from the input field */
-  /* Align it vertically center if your form inputs are tall */
+  color: #a71919; 
+  font-size: 1em; 
+  display: block; 
+  margin-left: 10px; 
   line-height: 40px; 
   width: auto; 
 }
@@ -499,27 +506,25 @@ div#heading h1
 #newuser_btn{
      display: block;
     font-family: 'Russo One', sans-serif;
-    color: #333; /* Adjusted the color for better visibility */
-    background-color: #8bffee; /* Added a background color similar to the button image */
+    color: #333; 
+    background-color: #8bffee; 
     border: none;
     border-radius: 5px;
     box-shadow: 3px 3px 3px #000;
-    font-size: 16px; /* Removed duplicate font-size property */
+    font-size: 16px; 
     margin: 40px;
-    margin-top: 8px; /* Adjusted margin to match the style */
-    height: 36px; /* Removed duplicate height property */
+    margin-top: 8px; 
+    height: 36px; 
     width: 160px;
     float: right;
-    text-align: center; /* To center the text in the anchor */
-    line-height: 36px; /* To vertically center the text in the anchor */
-    text-decoration: none; /* Removes the underline from the anchor text */
+    text-align: center; 
+    line-height: 36px; 
+    text-decoration: none; 
 }
 
 .formButton:hover{
     cursor: pointer;
 }
-
-
 
 div.productsHeader {
     display: inline-block;
@@ -547,8 +552,11 @@ div.listOfProducts
 {
     display:grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px; 
-    margin-top: 40px;
+    gap: 1rem; 
+    margin: auto; 
+    padding: 1rem; 
+    width: 100%;
+    
 
 }
 
@@ -569,13 +577,13 @@ div.listOfProducts img
 
     opacity: 0;
     transform: translateY(-20px); 
-    animation: fadeSlideDown 0.7s ease-in-out forwards;
+    animation: fadeSlideDown 0.7s ease-in-out forwards; 
 }
 
 .edit-product-button {
     padding: 10px 15px;
     margin-top: 10px;
-    background-color: #4CAF50; /* or any color that suits your design */
+    background-color: #4CAF50; 
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -586,21 +594,57 @@ div.listOfProducts img
 
 }
 
-.edit-product-button:hover {
-    background-color: #367C39; /* darker shade for hover effect */
+.add-product-button {
+    display: inline-block; 
+    padding: 10px 20px;
+    margin: 10px; 
+    background-color: #4CAF50; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    font-family: 'Russo One', sans-serif;
+    transition: background-color 0.3s ease;
 }
+
+.add-product-button:hover {
+    background-color: #367C39; 
+}
+
+.productItem {
+    width: 100%; 
+}
+
+.productImage img {
+    width: 100%; 
+    height: auto; 
+
+    object-fit: cover; 
+}
+
+
+.productDetails {
+    width: 100%; 
+    padding: 10px 0; 
+}
+
+.edit-product-button:hover {
+    background-color: #367C39; 
+}
+
+
 
 .product-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Align items to the top */
+  align-items: flex-start; 
   margin-top: 20px;
-  gap: 20px; /* This adds space between the image and details */
+  gap: 20px; 
 }
 
 .product-image {
-  flex: 1; /* Allows the image container to grow */
-  max-width: 60%; /* Now 60% of the container's width, adjust as needed */
+  flex: 1; 
+  max-width: 60%; 
   text-align: center;
   padding: 20px;
 }
@@ -617,24 +661,24 @@ div.listOfProducts img
     box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
 
     opacity: 100;
-  max-width: 100%; /* Adjust as needed */
+  max-width: 100%; 
   height: auto;
 }
 
 .product-details {
-  flex: 1; /* Still takes up remaining space */
-  max-width: 36%; /* Limits the width of the details section */
+  flex: 1; 
+  max-width: 36%; 
   padding: 50px;
   text-align: left;
 }
 
 .product-description {
     font-family: 'Russo One',sans-serif;
-  margin-top: 20px; /* Spacing above the description */
-  padding: 15px; /* Padding inside the description box */
-  background: #fff; /* White background */
-  border: 3px solid #000000; /* Light grey border */
-  border-radius: 10px; /* Rounded corners */
+  margin-top: 20px; 
+  padding: 15px; 
+  background: #fff; 
+  border: 3px solid #000000; 
+  border-radius: 10px; 
 }
 
 .product-details h1 {
@@ -657,8 +701,8 @@ div.listOfProducts img
     align-items: center;
     width: fit-content;
     padding: 15px;
-    font-size: 2.2em; /* Example size, adjust as necessary */
-    color: rgb(0, 0, 0); /* Example color, adjust as necessary */
+    font-size: 2.2em; 
+    color: rgb(0, 0, 0); 
     background-color:lavender;
     border: 3px solid #93e1fc;
     border-radius: 20px;
@@ -667,7 +711,7 @@ div.listOfProducts img
 
 .rating-number {
     margin-left: 5px;
-    font-size: 0.6em; /* Example size, adjust as necessary */
+    font-size: 0.6em; 
     font-family: 'Bruno Ace', sans-serif;
 }
 
@@ -797,166 +841,268 @@ div.listOfProducts a:hover{
     
  }
 
- #edit-product-form {
-    max-width: 600px; /* Set form width */
-    margin: 20px auto; /* Center form in the page */
+ .edit-product-form {
+    max-width: 600px; 
+    margin: 20px auto;
     padding: 20px;
-    background: #fff; /* Form background */
-    border-radius: 10px; /* Rounded corners for the form */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     font-family: 'Russo One', sans-serif;
 }
 
-/* Form Field Styling */
-#edit-product-form label{
-    display: block; /* Make labels block to enforce a new line */
-    margin-bottom: 5px; /* Space below the label */
-    color: #333; /* Label text color */
+
+.edit-product-form label{
+    display: block; 
+    margin-bottom: 5px; 
+    color: #333; 
     font-size: 1.1em;
 }
 
 
- #edit-product-form input[type="text"],
- #edit-product-form input[type="number"],
- #edit-product-form textarea,
- #edit-product-form select {
+ .edit-product-form input[type="text"],
+ .edit-product-form input[type="number"],
+ .edit-product-form textarea,
+ .edit-product-form select {
     width: 90%;
-    padding: 10px; /* Padding inside the inputs */
-    margin-bottom: 20px; /* Space below the inputs */
-    border-radius: 5px; /* Rounded corners for the inputs */
-    border: 1px solid #ccc; /* Border color */
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
     font-family: Arial, Helvetica, sans-serif;
 }
 
- #edit-product-form textarea {
-    resize: vertical; /* Allow vertical resizing, typically modern approach */
+ .edit-product-form textarea {
+    resize: vertical; 
 }
 
-/* Button Styling */
- #edit-product-form input[type="submit"] {
-    background-color: #5CB85C; /* Button color */
-    color: white; /* Text color */
-    padding: 10px 15px; /* Padding inside the button */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners for the button */
-    cursor: pointer; /* Cursor to indicate it's clickable */
-    font-size: 1.1em; /* Text size */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
+
+ .edit-product-form input[type="submit"] {
+    background-color: #5CB85C; 
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
     font-family: 'Bruno Ace', sans;
     margin-top: 20px;
 }
 
- #edit-product-form input[type="submit"]:hover {
-    background-color: #4CAE4C; /* Darker shade on hover */
+ .edit-product-form input[type="submit"]:hover {
+    background-color: #4CAE4C; /
 }
 
-/* Image Preview Styling */
- #edit-product-form img {
-    max-width: 100px; /* Set a max-width for the image preview */
-    border-radius: 5px; /* Optional: Rounded corners for the image */
+
+ .edit-product-form img {
+    max-width: 100px; 
+    border-radius: 5px; 
 
     margin-left: 10px;
-    margin-top: 10px; /* Space above the image */
+    margin-top: 10px; 
 }
 
+
 .product-reviews {
-    max-width: 70%; /* Set a max-width for reviews */
-    margin: 20px auto; /* Center the review list */
-    padding: 20px; /* Add padding */
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 70%; 
+    margin: 20px auto; 
+    padding: 20px; 
+    background: rgba(255, 255, 255, 0.8); 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     font-family: 'Bruno Ace', sans-serif;
 }
 
+
 .review-item {
-    border-bottom: 1px solid #ccc; /* Separator between reviews */
-    padding: 10px 0; /* Padding above and below the review */
+    border-bottom: 1px solid #ccc; 
+    padding: 20px 0; 
 }
 
 .review-item:last-child {
-    border-bottom: none; /* No border for the last item */
+    border-bottom: none; 
 }
 
 .review-item p {
-    margin: 0 0 10px; /* Spacing between paragraphs */
-    color: #333; /* Text color */
+    margin: 0 0 10px; 
+    color: #333; 
 }
 
 .review-item .reviewer-name {
-    font-weight: bold; /* Make reviewer name bold */
+    font-weight: bold; 
 }
 
 .review-item .rating {
-    color: #f5c542; /* Golden color for stars */
-    font-size: 1.2em; /* Larger font size for stars */
+    color: #f5c542; 
+    font-size: 1.2em; 
 }
 
 .review-item .review-text {
-    font-style: italic; /* Italic style for review text */
+    font-style: italic; 
 }
 
 .review-item img.review-image {
-    max-width: 100%; /* Maximum width to be 100% of the container */
-    height: auto; /* Height is set to auto to maintain aspect ratio */
-    border-radius: 5px; /* Optional: if you want rounded corners */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: if you want a shadow for aesthetics */
-    margin-top: 10px; /* Optional: add some space above the image */
+    max-width: 100%; 
+    height: auto; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    margin-top: 10px; 
 }
 
-/* You can also limit the height if necessary */
+
 .review-item img.review-image {
-    max-height: 200px; /* Example: limit the height to 200px */
-    object-fit: cover; /* This will cover the area without stretching the image */
+    max-height: 200px; 
+    object-fit: cover; /
 }
 
-/* Submit Review Form */
+
 form#submit-review-form {
-    max-width: 600px; /* Set form width */
-    margin: 20px auto; /* Center form in the page */
+    max-width: 600px; 
+    margin: 20px auto; 
     padding: 20px;
-    background: #fff; /* Form background */
-    border-radius: 10px; /* Rounded corners for the form */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-/* Form Field Styling */
+
 form#submit-review-form label {
-    display: block; /* Make labels block to enforce a new line */
-    margin-bottom: 5px; /* Space below the label */
-    color: #333; /* Label text color */
+    display: block; 
+    margin-bottom: 5px; 
+    color: #333; 
 }
 form#submit-review-form input[type="text"],
 form#submit-review-form select,
 form#submit-review-form textarea {
     width: 80%; 
-    padding: 10px; /* Padding inside the inputs */
-    margin-bottom: 20px; /* Space below the inputs */
-    border-radius: 5px; /* Rounded corners for the inputs */
-    border: 1px solid #ccc; /* Border color */
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
 }
 
 form#submit-review-form textarea {
-    resize: vertical; /* Allow vertical resizing, typically modern approach */
-}
-
-/* Button Styling */
-form#submit-review-form input[type="submit"] {
-    background-color: #5CB85C; /* Button color */
-    color: white; /* Text color */
-    padding: 10px 15px; /* Padding inside the button */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners for the button */
-    cursor: pointer; /* Cursor to indicate it's clickable */
-    font-size: 1.1em; /* Text size */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
-}
-
-form#submit-review-form input[type="submit"]:hover {
-    background-color: #4CAE4C; /* Darker shade on hover */
+    resize: vertical; 
 }
 
 
+.submit-review-button {
+    margin-top: 20px;
+    background-color: #5cafb8; 
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em;
+    transition: background-color 0.3s; 
+    font-family: 'Bruno Ace', sans-serif;
+}
+
+.submit-review-button:hover {
+    background-color: #458187; 
+}
+
+.delete-review-button {
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1em;
+    transition: background-color 0.3s; 
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#add-product-form {
+    max-width: 600px; 
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: 'Russo One', sans-serif;
+}
+
+
+#add-product-form label{
+    display: block; 
+    margin-bottom: 5px; 
+    color: #333; 
+    font-size: 1.1em;
+}
+
+
+ #add-product-form input[type="text"],
+ #add-product-form input[type="number"],
+ #add-product-form textarea,
+ #add-product-form select {
+    width: 90%;
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ #add-product-form textarea {
+    resize: vertical; 
+}
+
+
+ #add-product-form input[type="submit"] {
+    background-color: #5CB85C; 
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
+    font-family: 'Bruno Ace', sans;
+    margin-top: 20px;
+}
+
+ #add-product-form input[type="submit"]:hover {
+    background-color: #4CAE4C; /
+}
  
+.sorting-options
+{
+    width: fit-content;
+    margin: 20px;
+    font-family: 'Bruno Ace', sans-serif;
+}
 
+
+.search-form-container {
+    text-align: center; 
+    margin-bottom: 20px; 
+    font-family: 'Bruno Ace', sans-serif;
+}
+
+.search-form-container form {
+    display: inline-block; 
+    margin-right: 20px; 
+}
+
+.search-form-container input[type="text"],
+.search-form-container input[type="submit"] {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-form-container input[type="submit"] {
+    cursor: pointer;
+    background-color: #5CB85C;
+    color: white;
+    border-color: #4CAE4C;
+}
+
+.search-form-container input[type="submit"]:hover {
+    background-color: #4CAE4C;
+}
 

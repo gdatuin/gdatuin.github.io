@@ -1,25 +1,25 @@
 <?php
-// Start the session
+
 session_start();
 
-// Check if the user is not logged in, redirect to the login page
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('Location: login.php');
     exit;
 }
 
-// Include your database connection script
-require 'connect.php'; // This file should establish a connection to your database.
+
+require 'connect.php'; 
 
 try {
-    // Retrieve the logged-in user's information
-    $userId = $_SESSION['user_id']; // Make sure you have stored user_id in the session when the user logged in
+    
+    $userId = $_SESSION['user_id']; 
     $userQuery = "SELECT username, email FROM users WHERE user_id = :user_id";
 
     $statement = $db->prepare($userQuery);
     $statement->execute(['user_id' => $userId]);
     
-    // Fetch the user data
+    
     $userData = $statement->fetch(PDO::FETCH_ASSOC);
     
 } catch (PDOException $e) {
@@ -49,16 +49,13 @@ try {
 <?php include 'header.php'; ?>
 
     <div class="profile-container">
-        <!-- Profile Information -->
+       
         <h1>Welcome, <?= htmlspecialchars($userData['username']); ?></h1>
         <p>Email: <?= htmlspecialchars($userData['email']); ?></p>
-        <!-- Add more profile information you wish to show -->
-
-        <!-- Displaying user orders or any other information would be done here, using a similar approach. -->
+ 
 
     </div>
 
-    <!-- Possibly add a logout button -->
     <form action="logout.php" method="post">
         <input type="submit" name="logout" value="Logout">
     </form>

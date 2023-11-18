@@ -1,35 +1,30 @@
 <?php
-// Start the session
+
 session_start();
-
-// Include database connection file
 require 'connect.php';
-
-// Get product ID from URL
 $product_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-// Initialize variables
 $product = [];
 $stockStatus = "IN STOCK";
 $averageRating = 0;
-$reviews = []; // Initialize as an empty array
+$reviews = []; 
 
-// Try to fetch the product from the database
+
 try {
     $stmt = $db->prepare("SELECT * FROM products WHERE product_id = :product_id");
     $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
 
-    // Check if the product exists
+
     if ($stmt->rowCount() > 0) {
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Set stock status based on inventory count
+ 
         if ($product['inventory_count'] < 1) {
             $stockStatus = "OUT OF STOCK";
         } else {
             $stockStatus = "IN STOCK";
-            // Check if the logged-in user is an admin or sales_manager, then display inventory count
+
             if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'sales_manager')) {
                 $stockStatus .= " (Available: " . $product['inventory_count'] . ")";
             }
@@ -41,10 +36,10 @@ try {
     echo "Error: " . $e->getMessage();
 }
 
-// Fetch reviews and usernames
+
 try {
     $reviewStmt = $db->prepare("
-        SELECT r.rating, r.review_text, r.guest_name, r.review_image, u.username
+        SELECT r.rating, r.review_id, r.review_text, r.guest_name, r.review_image, r.user_id, u.username
         FROM reviews r
         LEFT JOIN users u ON r.user_id = u.user_id
         WHERE r.product_id = :product_id
@@ -57,7 +52,7 @@ try {
     echo "Error fetching reviews: " . $e->getMessage();
 }
 
-// Fetch the average rating
+
 try {
     $ratingStmt = $db->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = :product_id");
     $ratingStmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
@@ -65,13 +60,13 @@ try {
 
     if ($ratingStmt->rowCount() > 0) {
         $ratingResult = $ratingStmt->fetch(PDO::FETCH_ASSOC);
-        $averageRating = round($ratingResult['average_rating'], 1); // Round to 1 decimal place
+        $averageRating = round($ratingResult['average_rating'], 1); 
     }
 } catch (PDOException $e) {
     echo "Error fetching average rating: " . $e->getMessage();
 }
 
-// Generate star rating HTML
+
 $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9734;', 5 - floor($averageRating));
 ?>
 
@@ -102,7 +97,7 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                     <img src="images/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
                 </div>
                 <div class="product-details">
-                    <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['admin', 'content_manager'])): ?>
+                    <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['admin', 'content_manager', 'sales_manager'])): ?>
     <a href="edit-product.php?id=<?= htmlspecialchars($product_id) ?>" class="edit-product-button">Edit Product</a>
 <?php endif; ?>
                     <h1><?= htmlspecialchars($product['product_name']) ?></h1>
@@ -133,12 +128,20 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                      <?php if (!empty($review['review_image'])): ?>
             <img class="review-image" src="review_images/<?= htmlspecialchars($review['review_image']) ?>" alt="Review image">
         <?php endif; ?>
+
+          <?php if (isset($_SESSION['user_id']) && 
+   (($_SESSION['role'] == 'admin') || ($_SESSION['user_id'] == $review['user_id']))): ?>
+            <form action="delete-review.php" class="delete-button" method="post" onsubmit="return confirm('Are you sure you want to delete the review?');">
+                <input type="hidden" name="review_id" value="<?= htmlspecialchars($review['review_id']) ?>">
+                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_id) ?>">
+                <button type="submit" name="delete_review" class="delete-review-button">Delete Review</button>
+            </form>
+        <?php endif; ?>
                 </div>
             <?php endforeach; ?>
                 
-
-                <form action="submit_review.php" method="post" id="submit-review-form" enctype="multipart/form-data">
-                     <?php if (!isset($_SESSION['user_id'])): // Check if user is not logged in ?>
+                <form action="submit-review.php" method="post" id="submit-review-form" enctype="multipart/form-data">
+                     <?php if (!isset($_SESSION['user_id'])): ?>
         <label for="name">Your Name:</label>
         <input type="text" id="name" name="guest_name" value="<?= htmlspecialchars($formData['guest_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
     <?php endif; ?>
@@ -160,10 +163,10 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                     <input type="file" id="review_image" name="review_image" accept="image/*">
                     
                     <!-- <label for="captcha">Enter CAPTCHA:</label>
-                    <img src="captcha.php" alt="CAPTCHA" style="border: 1px solid #000; margin-top: 5px;">
+                    <img src="captcha.php" alt="CAPTCHA">
                     <input type="text" id="captcha" name="captcha" required> -->
                     
-                    <button type="submit" name="submit_review">Submit Review</button>
+                   <br><button type="submit" name="submit_review" class="submit-review-button">Submit Review</button></br>
                     
                     <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_id, ENT_QUOTES, 'UTF-8') ?>">
                 </form>

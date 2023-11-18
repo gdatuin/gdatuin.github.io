@@ -1,34 +1,33 @@
 <?php
 session_start();
-// Assuming you have a database connection set up and it is included here
+
 require 'connect.php';
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve user input
+
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Check if passwords match
+
     if ($password !== $confirm_password) {
         echo "Passwords do not match. Please try again.";
     } else {
 
         $_SESSION['loggedin'] = true;
-        $_SESSION['username'] = $username; // Where $username is the logged-in user's name or ID.
+        $_SESSION['username'] = $username; 
     
          $role = 'customer';
          $query = "INSERT INTO users (username, password, email, role) VALUES (:username, :password, :email, :role)";
 
         try {
-            $statement = $db->prepare($query);
-            $statement->bindValue(':username', $username, PDO::PARAM_STR);
-            $statement->bindValue(':password', $password, PDO::PARAM_STR);
-            $statement->bindValue(':email', $email, PDO::PARAM_STR);
-            $statement->bindValue(':role', $role, PDO::PARAM_STR);
-            $statement->execute();
+            $stmt = $db->prepare($query);
+            $stmt->bindValue(':username', $username, PDO::PARAM_STR);
+            $stmt->bindValue(':password', $password, PDO::PARAM_STR);
+            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+            $stmt->bindValue(':role', $role, PDO::PARAM_STR);
+            $stmt->execute();
 
      header("Location: index.php"); 
             exit();

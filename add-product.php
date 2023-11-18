@@ -1,43 +1,43 @@
 <?php
-// Start the session
+
 session_start();
 
-// Include database connection file
+
 require 'connect.php';
 
-// Check if the user is allowed to add products
-if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin','content_manager'])) {
+
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin','content_manager', 'sales_manager'])) {
     die('You do not have permission to view this page.');
 }
 
-// Initialize variables to store form data
+
 $product_name = '';
 $description = '';
 $price = '';
 $inventory_count = '';
 $image = '';
 
-// Process form submission
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $product_name = filter_input(INPUT_POST, 'product_name', FILTER_SANITIZE_STRING);
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
     $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $inventory_count = filter_input(INPUT_POST, 'inventory_count', FILTER_SANITIZE_NUMBER_INT);
     
-    // Check if an image file was uploaded
+
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed = ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
         $file_name = $_FILES['image']['name'];
         $file_type = $_FILES['image']['type'];
         $file_size = $_FILES['image']['size'];
 
-        // Verify file extension
+
         $ext = pathinfo($file_name, PATHINFO_EXTENSION);
         if (!array_key_exists($ext, $allowed)) die('Error: Please select a valid file format.');
 
-        // Verify file type
+
         if (in_array($file_type, $allowed)) {
-            // Check whether file exists before uploading it
+
             if (file_exists("images/" . $file_name)) {
                 echo $file_name . ' is already exists.';
             } else {
@@ -51,8 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo 'Error: ' . $_FILES['image']['error'];
     }
-    
-    // Insert into the database
+
+    if ($inventory_count < 0)
+    {
+        die('Error: Inventory count cannot be listed as negative.');
+    }
+
+    if ($price < 0)
+    {
+        die('Error: Price cannot be lower than 0.');
+    }
+
     if ($image) {
         try {
             $stmt = $db->prepare("INSERT INTO products (product_name, description, price, inventory_count, image) VALUES (:product_name, :description, :price, :inventory_count, :image)");
@@ -63,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':image', $image);
             $stmt->execute();
             echo 'Product added successfully.';
+
+            header ("Location: products.php");
+            exit;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
         }
@@ -84,12 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" href="#">
 </head>
-<body>
+<body id="add-product">
 
 <?php include 'header.php';?>
 
-<!-- Product Form -->
-<form action="add-product.php" method="post" enctype="multipart/form-data">
+<form action="add-product.php" method="post" enctype="multipart/form-data" id="add-product-form">
     <label for="product_name">Product Name:</label>
     <input type="text" name="product_name" id="product_name" required><br>
 
