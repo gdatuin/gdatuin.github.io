@@ -15,7 +15,9 @@ $sortOptions = [
     'product_name_asc' => ['field' => 'product_name', 'order' => 'asc'],
     'product_name_desc' => ['field' => 'product_name', 'order' => 'desc'],
     'price_asc' => ['field' => 'price', 'order' => 'asc'],
-    'price_desc' => ['field' => 'price', 'order' => 'desc']
+    'price_desc' => ['field' => 'price', 'order' => 'desc'],
+    'rating_asc' => ['field' => 'average_rating', 'order' => 'asc'],
+    'rating_desc' => ['field' => 'average_rating', 'order' => 'desc']
 
 ];
 
@@ -26,10 +28,11 @@ if (array_key_exists($sortOption, $sortOptions)) {
 
 
 try {
-    $sql = "SELECT product_id, product_name, description, price, inventory_count, image FROM products";
+     $sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id";
     if ($searchTerm) {
-        $sql .= " WHERE product_name LIKE :searchTerm";
+        $sql .= " WHERE p.product_name LIKE :searchTerm";
     }
+    $sql .= " GROUP BY p.product_id";
     $sql .= " ORDER BY $sort $order";
 
     $stmt = $db->prepare($sql);
@@ -92,6 +95,8 @@ try {
             <option value="product_name_desc" <?php if ($sortOption == 'product_name_desc') echo 'selected'; ?>>Name (Z-A)</option>
             <option value="price_asc" <?php if ($sortOption == 'price_asc') echo 'selected'; ?>>Price (Low to High)</option>
             <option value="price_desc" <?php if ($sortOption == 'price_desc') echo 'selected'; ?>>Price (High to Low)</option>
+            <option value="rating_asc" <?php if ($sortOption == 'rating_asc') echo 'selected'; ?>>Rating (Low to High)</option>
+            <option value="rating_desc" <?php if ($sortOption == 'rating_desc') echo 'selected'; ?>>Rating (High to Low)</option>
         </select>
     </form>
 </div>

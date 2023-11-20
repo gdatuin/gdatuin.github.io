@@ -161,6 +161,7 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                     
                     <label for="review_image">Upload Image:</label>
                     <input type="file" id="review_image" name="review_image" accept="image/*">
+
                     
                     <!-- <label for="captcha">Enter CAPTCHA:</label>
                     <img src="captcha.php" alt="CAPTCHA">

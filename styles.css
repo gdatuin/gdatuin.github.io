@@ -64,7 +64,10 @@ body#add-product
     background-image: url("images/background6.png");
 }
 
-
+#loginPage
+{
+    height: 61vh;
+}
 
 
 header{

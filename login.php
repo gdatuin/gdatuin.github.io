@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 <?php include 'header.php';?>
 
-<main>
+<main id="loginPage">
     <div id="heading">
         <h1>Login</h1>
 
