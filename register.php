@@ -30,6 +30,10 @@ try {
     $stmt->bindValue(':role', $role, PDO::PARAM_STR);
     $stmt->execute();
 
+    $last_id = $db->lastInsertId();
+
+    $_SESSION['user_id'] = $last_id; 
+
     header("Location: index.php");
     exit;
 } catch (PDOException $e) {
