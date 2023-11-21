@@ -15,26 +15,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Passwords do not match. Please try again.";
     } else {
 
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $username; 
     
          $role = 'customer';
          $query = "INSERT INTO users (username, password, email, role) VALUES (:username, :password, :email, :role)";
 
-        try {
-            $stmt = $db->prepare($query);
-            $stmt->bindValue(':username', $username, PDO::PARAM_STR);
-            $stmt->bindValue(':password', $password, PDO::PARAM_STR);
-            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-            $stmt->bindValue(':role', $role, PDO::PARAM_STR);
-            $stmt->execute();
+try {
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(':username', $username, PDO::PARAM_STR);
+    $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR); 
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    $stmt->bindValue(':role', $role, PDO::PARAM_STR);
+    $stmt->execute();
 
-     header("Location: index.php"); 
-            exit();
-        } catch (PDOException $e) {
-
-            die("Error: " . $e->getMessage());
-        }
+    header("Location: index.php");
+    exit;
+} catch (PDOException $e) {
+    die("Error: " . $e->getMessage());
+}
 }
 }
 ?>

@@ -18,15 +18,20 @@ body{
     
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body#index{
-    background-image: url("images/background7.jpg");
+    background-image: url("images/index-background.jpg");
 
 }
 
 body#contact-us{
     
-    background-image: url("images/background4.png");
+    background-image: url("images/contactus-background.png");
 
     
     
@@ -34,14 +39,14 @@ body#contact-us{
 
 body#login{
    
-    background-image: url("images/background4.png");
+    background-image: url("images/contactus-background.png");
 
  
 }
 
 body#products
 {
-    background-image: url("images/background6.png");
+    background-image: url("images/products-background.png");
 
     
 }
@@ -61,7 +66,12 @@ body#edit-product
 body#add-product
 {
     
-    background-image: url("images/background6.png");
+    background-image: url("images/products-background.png");
+}
+
+body#profile
+{
+    background-image: url("images/profile-background.png");
 }
 
 #loginPage
@@ -1109,3 +1119,14 @@ form#submit-review-form textarea {
     background-color: #4CAE4C;
 }
 
+.newItem img {
+  transition: transform 0.5s ease;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.newItem:hover img {
+  transform: scale(1.05);
+}

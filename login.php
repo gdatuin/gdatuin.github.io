@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
     {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if ($form_password === $row['password']) 
+        if (password_verify($form_password, $row['password'])) 
         {
             
             $_SESSION['loggedin'] = true;

@@ -1,7 +1,5 @@
 <?php
 
-
-
 require 'connect.php';
 
 try {
