@@ -7,7 +7,7 @@ require 'connect.php';
 
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'content_manager', 'sales_manager'])) {
-    die('You do not have permission to edit products.');
+    header('Location: products.php');
 }
 
 

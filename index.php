@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require 'connect.php';
 
 try {
@@ -83,6 +83,9 @@ try {
         </div>
     <?php endforeach; ?>
 </div>
+
+<h2> Blog </h2>
+<?php include 'blog.php'; ?>
        </main>
 
         <?php include 'footer.php'; ?>

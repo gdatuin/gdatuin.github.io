@@ -1130,3 +1130,242 @@ form#submit-review-form textarea {
 .newItem:hover img {
   transform: scale(1.05);
 }
+
+/* Container for the entire blog which will have the window background */
+.frame-container {
+    background: url('images/blog-window.png') no-repeat center center;
+    background-size: contain;
+    width: 1280px; /* Width of your PNG */
+    height: 720px; /* Height of your PNG */
+    overflow-y: auto; /* Makes the container scrollable */
+    position: relative; /* Needed for absolute positioning of children if necessary */
+    margin: auto; /* Center the container */
+    padding: 50px;
+
+}
+
+/* Container for individual blog posts */
+.blog-container {
+    position: absolute;
+    top: 144px; /* Position from the top of the frame-container */
+    left: 127px; /* Position from the left of the frame-container */
+    width: 915px; /* Width of the content area */
+    height: 489px; /* Height of the content area */
+    overflow-y: auto; /* Scrollable if content overflows */
+}
+
+/* Individual blog posts styling */
+.blog-post {
+    background: url('images/blog-background.jpg');
+    display: flex; /* Use flexbox for layout */
+    align-items: flex-start; /* Align items to the start of the flex container */
+    margin-bottom: 20px; /* Space between posts */
+    background-color: #a71919; /* Background color for the blog post */
+    border: solid #000; /* Border properties */
+    border-radius: 30px; /* Rounded corners for the border */
+    padding: 20px; /* Padding inside the blog post */
+    overflow: hidden;
+
+}
+
+/* Title of the blog post */
+.post-title {
+    width: 100%; /* Full width */
+    text-align: center; /* Center the title */
+    margin-bottom: 20px; /* Space after the title */
+    margin: 10px;
+    font-size: 2em;
+    color: #ffffff;
+    font-family: 'Bruno Ace';
+}
+
+/* Image within the blog post */
+.blog-post.with-image img {
+    float: left; /* Float the image to the left */
+    width: 300px; /* Adjust the width as necessary */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 20px; /* Space between image and content text */
+    margin-bottom: 20px; /* Space below the image */
+    border: 3px solid transparent;
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 0%, rgba(233,148,219,1) 100%);
+    border-radius: 10%;
+    box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+}
+
+.blog-post.without-image .post-text {
+    margin: 0 auto; /* Center the text block if there's no image */
+    width: 100%;
+}
+
+
+/* Content text within the blog post */
+.post-text {
+    overflow: hidden; /* This ensures that the container doesn't collapse around the floated image */
+    padding: 0 20px; /* Spacing on the left and right */
+    font-family: 'Days One', sans-serif;
+    background: rgb(255,255,255);
+background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(185,250,255,1) 0%, rgba(255,255,255,1) 100%);
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    width: 100%;
+    padding-bottom: 30px;
+    border: #000 solid 2px;
+}
+
+/* Title of the blog post */
+.post-title {
+    clear: both; /* Ensure the title does not wrap around the floated image */
+    text-align: center; /* Center the title */
+    margin: 10px 0; /* Space above and below the title */
+    font-size: 2em;
+    color: #ffffff;
+}
+
+/* Date of the blog post */
+.post-date {
+    margin: 10px 0; /* Space above and below the date */
+    font-family: 'Days One', sans-serif;
+    color: black;
+}
+
+.edit-post-button
+{
+ padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #af4c7a; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-family: 'Russo One', sans-serif;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+
+
+}
+
+.create-post-button
+{
+    position:absolute;
+    top: 87px;
+    left: 194px;
+  
+    color: black;
+    text-decoration: none;
+    border-radius: 30px;
+    font-family: 'Russo One', sans-serif;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    font-size: 1.2em;
+    padding: 5px;
+
+
+
+}
+
+#create-post-form {
+    max-width: 600px; 
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: 'Russo One', sans-serif;
+}
+
+
+#create-post-form label{
+    display: block; 
+    margin-bottom: 5px; 
+    color: #333; 
+    font-size: 1.1em;
+}
+
+
+ #create-post-form input[type="text"],
+ #create-post-form textarea,
+ #create-post-form select {
+    width: 90%;
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ #create-post-form textarea {
+    resize: vertical; 
+}
+
+
+ #create-post-form input[type="submit"] {
+    background-color: #af4c7a; 
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
+    font-family: 'Bruno Ace', sans;
+    margin-top: 20px;
+}
+
+ #create-product-form input[type="submit"]:hover {
+    background-color: #e06aa1; 
+}
+
+#edit-post-form {
+    max-width: 600px; 
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: 'Russo One', sans-serif;
+}
+
+
+#edit-post-form label{
+    display: block; 
+    margin-bottom: 5px; 
+    color: #333; 
+    font-size: 1.1em;
+}
+
+
+ #edit-post-form input[type="text"],
+ #edit-post-form textarea,
+ #edit-post-form select {
+    width: 90%;
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+ #edit-post-form textarea {
+    resize: vertical; 
+}
+
+
+ #edit-post-form input[type="submit"] {
+    background-color: #af4c7a;
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
+    font-family: 'Bruno Ace', sans;
+    margin-top: 20px;
+}
+
+ #edit-product-form input[type="submit"]:hover {
+    background-color: #e06aa1; 
+}
