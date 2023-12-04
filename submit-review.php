@@ -4,13 +4,31 @@ require 'connect.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_id = $_SESSION['user_id'] ?? null;
-    $guest_name = $user_id ? null : filter_input(INPUT_POST, 'guest_name', FILTER_SANITIZE_STRING);
-    $product_id = filter_input(INPUT_POST, 'product_id', FILTER_SANITIZE_NUMBER_INT);
-    $rating = filter_input(INPUT_POST, 'rating', FILTER_SANITIZE_NUMBER_INT);
-    $review_text = filter_input(INPUT_POST, 'review_text', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+     $formData = [
+        'guest_name' => filter_input(INPUT_POST, 'guest_name', FILTER_SANITIZE_STRING),
+        'product_id' => filter_input(INPUT_POST, 'product_id', FILTER_SANITIZE_NUMBER_INT),
+        'rating' => filter_input(INPUT_POST, 'rating', FILTER_SANITIZE_NUMBER_INT),
+        'review_text' => filter_input(INPUT_POST, 'review_text', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+        'user_id' => filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT)
+    ];
+
+    
 
     $imageFileName = null;
+    
+    $userCaptcha = filter_input(INPUT_POST, 'captcha', FILTER_SANITIZE_STRING);
+    if (empty($userCaptcha) || $userCaptcha != $_SESSION['captcha']) {
+        
+        $_SESSION['review_error_message'] = "Incorrect CAPTCHA. Please try again.";
+        $_SESSION['form_data'] = $formData;
+        
+        header('Location: product.php?id=' . $formData['product_id']. '#submit-review-form');
+        exit;
+    }
+
+    
+    
+    unset($_SESSION['form_data']);
 
     if (isset($_FILES['review_image']) && $_FILES['review_image']['error'] === UPLOAD_ERR_OK) {
         $allowed = ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
@@ -41,6 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':guest_name', $guest_name, PDO::PARAM_STR);
         }
 
+        $product_id = $formData['product_id'];
+        $rating = $formData['rating'];
+        $review_text = $formData['review_text'];
+        $review_image = $formData['review_image'];
+
+        
         $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
         $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
         $stmt->bindParam(':review_text', $review_text, PDO::PARAM_STR);

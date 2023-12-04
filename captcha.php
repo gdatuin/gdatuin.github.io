@@ -1,23 +1,39 @@
 <?php
 session_start();
 
-// Generate a random string.
-$captcha_code = '';
-for ($i = 0; $i < 6; $i++) {
-    $captcha_code .= chr(rand(97, 122));
+
+$randomString = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
+
+$_SESSION["captcha"] = $randomString;
+
+
+header("Content-Type: image/png");
+$image = imagecreatetruecolor(200, 50);
+
+
+$background_color = imagecolorallocate($image, 255, 255, 255); 
+$text_color = imagecolorallocate($image, 0, 0, 0); 
+$line_color = imagecolorallocate($image, 64, 64, 64); 
+$pixel_color = imagecolorallocate($image, 0, 0, 255); 
+
+
+imagefilledrectangle($image, 0, 0, 200, 50, $background_color);
+
+
+for($i = 0; $i < 5; $i++) {
+    imageline($image, 0, rand()%50, 200, rand()%50, $line_color);
 }
-$_SESSION["captcha_code"] = $captcha_code;
 
-// Create a CAPTCHA image.
-$image = imagecreate(120, 40);
-$background = imagecolorallocate($image, 255, 255, 255);
-$text_color = imagecolorallocate($image, 0, 0, 0);
+for($i = 0; $i < 1000; $i++) {
+    imagesetpixel($image, rand()%200, rand()%50, $pixel_color);
+}
 
-// Write the random string to the image.
-imagestring($image, 5, 10, 10, $captcha_code, $text_color);
 
-// Send headers and output the image.
-header("Content-type: image/png");
+imagettftext($image, 20, 0, 50, 30, $text_color, 'for_captcha/BebasNeue-Regular.ttf', $randomString);
+
+
 imagepng($image);
+
+
 imagedestroy($image);
 ?>

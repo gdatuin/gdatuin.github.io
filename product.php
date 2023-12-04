@@ -140,6 +140,11 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                 </div>
             <?php endforeach; ?>
                 
+            <?php if (isset($_SESSION['review_error_message'])): ?>
+    <div class="error-message"><?= $_SESSION['review_error_message']; ?></div>
+    <?php unset($_SESSION['review_error_message']); ?>
+<?php endif; ?>
+
                 <form action="submit-review.php" method="post" id="submit-review-form" enctype="multipart/form-data">
                      <?php if (!isset($_SESSION['user_id'])): ?>
         <label for="name">Your Name:</label>
@@ -150,22 +155,23 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                     <select id="rating" name="rating" required>
 
                         <?php for ($i = 5; $i >= 1; $i--): ?>
-                            <option value="<?= $i ?>" <?= (isset($formData['rating']) && $formData['rating'] == $i) ? 'selected' : '' ?>>
-                                <?= str_repeat('&#9733;', $i) . str_repeat('&#9734;', 5 - $i) ?>
-                            </option>
+                             <option value="<?= $i ?>" <?= (isset($_SESSION['form_data']['rating']) && $_SESSION['form_data']['rating'] == $i) ? 'selected' : '' ?>>
+            <?= str_repeat('&#9733;', $i) . str_repeat('&#9734;', 5 - $i) ?>
+        </option>
                         <?php endfor; ?>
                     </select>
                     
                     <label for="review_text">Your Review:</label>
-                    <textarea id="review_text" name="review_text" required><?= htmlspecialchars($formData['review_text'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                    <textarea id="review_text" name="review_text" required><?= htmlspecialchars($_SESSION['form_data']['review_text'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+
                     
                     <label for="review_image">Upload Image:</label>
                     <input type="file" id="review_image" name="review_image" accept="image/*">
 
                     
-                    <!-- <label for="captcha">Enter CAPTCHA:</label>
+                     <label for="captcha">Enter CAPTCHA:</label>
                     <img src="captcha.php" alt="CAPTCHA">
-                    <input type="text" id="captcha" name="captcha" required> -->
+                    <input type="text" id="captcha" name="captcha" required>
                     
                    <br><button type="submit" name="submit_review" class="submit-review-button">Submit Review</button></br>
                     
