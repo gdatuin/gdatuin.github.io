@@ -87,9 +87,17 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
 <body id ="productPage">
 
 
+
         <div class="elfsight-app-4114d580-7b3f-4432-b30a-d4699aac173d"></div>
     <?php include 'header.php'; ?>
-
+<!-- 
+    <div class="video-background">
+        <video autoplay loop muted>
+            <source src="images/testvideo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+ -->
     <main class="product-page">
         <?php if ($product): ?>
             <div class="product-container">

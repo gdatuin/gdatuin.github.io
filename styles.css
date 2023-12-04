@@ -46,16 +46,41 @@ body#login{
 
 body#products
 {
-    background-image: url("images/products-background.png");
+    background-image: url("images/products-background.png"); 
 
     
 }
 
 body#productPage
 {
-    
-    background-image: url("images/product-background.jpg");
+    background-image: url("images/product-background.jpg"); 
 }
+
+.video-background {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw; 
+    height: 100vh; 
+    z-index: -1; 
+    overflow: hidden; 
+}
+
+video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+
 
 body#edit-product
 {
@@ -590,8 +615,10 @@ div.listOfProducts img
 
     opacity: 0;
     transform: translateY(-20px); 
-    animation: fadeSlideDown 0.7s ease-in-out forwards; 
+    animation: fadeSlideDown 0.8s ease forwards; 
 }
+
+
 
 .edit-product-button {
     padding: 10px 15px;
@@ -641,6 +668,26 @@ div.listOfProducts img
     padding: 10px 0; 
 }
 
+.productDetails p  {
+
+     opacity: 0;
+  transform: translateX(-50px);
+
+
+  animation: fadeInLeft 0.9s ease forwards;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .edit-product-button:hover {
     background-color: #367C39; 
 }
@@ -673,10 +720,17 @@ div.listOfProducts img
     -webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 5px rgba(0,0,0,0); 
     box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
 
-    opacity: 100;
+
   max-width: 100%; 
   height: auto;
+
+  opacity: 0;
+  transform: scale(0.5);
+
+
+   animation: fadeInEnlarge 0.8s ease forwards;
 }
+
 
 .product-details {
   flex: 1; 
@@ -813,6 +867,18 @@ div.item8 img {
     }
   }
 
+  
+@keyframes fadeInEnlarge {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 
 
 div.listOfProducts p{
@@ -927,6 +993,14 @@ div.listOfProducts a:hover{
     font-family: 'Bruno Ace', sans-serif;
 }
 
+.product-reviews h2{
+    background-image: url('images/background.png');
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+    border: #000 solid 2px;
+}
 
 .review-item {
     border-bottom: 1px solid #ccc; 
@@ -1041,6 +1115,7 @@ form#submit-review-form textarea {
 
 #add-product-form label{
     display: block; 
+    margin-top: 10px;
     margin-bottom: 5px; 
     color: #333; 
     font-size: 1.1em;
@@ -1083,9 +1158,40 @@ form#submit-review-form textarea {
  
 .sorting-options
 {
+    display: flex;
+    flex-direction: row;
     width: fit-content;
     margin: 20px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
     font-family: 'Bruno Ace', sans-serif;
+    background-color: white;
+    margin-left: auto; 
+    margin-right: auto; 
+    font-size: 1.5em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    
+}
+
+.product-type-nav
+{
+    margin-left: 60px;
+}
+
+.product-type-nav a
+{
+    text-decoration: none;
+    color: #000;
+    margin: 20px;
+
+}
+
+.product-type-nav a:hover
+{
+    color:rgb(15, 219, 255);
+    transition: 0.2s;
+
 }
 
 
@@ -1131,61 +1237,61 @@ form#submit-review-form textarea {
   transform: scale(1.05);
 }
 
-/* Container for the entire blog which will have the window background */
+
 .frame-container {
     background: url('images/blog-window.png') no-repeat center center;
     background-size: contain;
-    width: 1280px; /* Width of your PNG */
-    height: 720px; /* Height of your PNG */
-    overflow-y: auto; /* Makes the container scrollable */
-    position: relative; /* Needed for absolute positioning of children if necessary */
-    margin: auto; /* Center the container */
+    width: 1280px; 
+    height: 720px; 
+    overflow-y: auto; 
+    position: relative; 
+    margin: auto; 
     padding: 50px;
 
 }
 
-/* Container for individual blog posts */
+
 .blog-container {
     position: absolute;
-    top: 144px; /* Position from the top of the frame-container */
-    left: 127px; /* Position from the left of the frame-container */
-    width: 915px; /* Width of the content area */
-    height: 489px; /* Height of the content area */
-    overflow-y: auto; /* Scrollable if content overflows */
+    top: 144px; 
+    left: 127px; 
+    width: 915px; 
+    height: 489px; 
+    overflow-y: auto; 
 }
 
-/* Individual blog posts styling */
+
 .blog-post {
     background: url('images/blog-background.jpg');
-    display: flex; /* Use flexbox for layout */
-    align-items: flex-start; /* Align items to the start of the flex container */
-    margin-bottom: 20px; /* Space between posts */
-    background-color: #a71919; /* Background color for the blog post */
-    border: solid #000; /* Border properties */
-    border-radius: 30px; /* Rounded corners for the border */
-    padding: 20px; /* Padding inside the blog post */
+    display: flex; 
+    align-items: flex-start; 
+    margin-bottom: 20px; 
+    background-color: #a71919; 
+    border: solid #000; 
+    border-radius: 30px; 
+    padding: 20px; 
     overflow: hidden;
 
 }
 
-/* Title of the blog post */
+
 .post-title {
-    width: 100%; /* Full width */
-    text-align: center; /* Center the title */
-    margin-bottom: 20px; /* Space after the title */
+    width: 100%; 
+    text-align: center; 
+    margin-bottom: 20px; 
     margin: 10px;
     font-size: 2em;
     color: #ffffff;
     font-family: 'Bruno Ace';
 }
 
-/* Image within the blog post */
+
 .blog-post.with-image img {
-    float: left; /* Float the image to the left */
-    width: 300px; /* Adjust the width as necessary */
-    height: auto; /* Maintain aspect ratio */
-    margin-right: 20px; /* Space between image and content text */
-    margin-bottom: 20px; /* Space below the image */
+    float: left; 
+    width: 300px; 
+    height: auto; 
+    margin-right: 20px; 
+    margin-bottom: 20px; 
     border: 3px solid transparent;
     background: rgb(255,255,255);
     background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 0%, rgba(233,148,219,1) 100%);
@@ -1194,15 +1300,15 @@ form#submit-review-form textarea {
 }
 
 .blog-post.without-image .post-text {
-    margin: 0 auto; /* Center the text block if there's no image */
+    margin: 0 auto; 
     width: 100%;
 }
 
 
-/* Content text within the blog post */
+
 .post-text {
-    overflow: hidden; /* This ensures that the container doesn't collapse around the floated image */
-    padding: 0 20px; /* Spacing on the left and right */
+    overflow: hidden; 
+    padding: 0 20px; 
     font-family: 'Days One', sans-serif;
     background: rgb(255,255,255);
 background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(185,250,255,1) 0%, rgba(255,255,255,1) 100%);
@@ -1213,18 +1319,18 @@ background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(185,250,255,1) 0
     border: #000 solid 2px;
 }
 
-/* Title of the blog post */
+
 .post-title {
-    clear: both; /* Ensure the title does not wrap around the floated image */
-    text-align: center; /* Center the title */
-    margin: 10px 0; /* Space above and below the title */
+    clear: both; 
+    text-align: center; 
+    margin: 10px 0; 
     font-size: 2em;
     color: #ffffff;
 }
 
-/* Date of the blog post */
+
 .post-date {
-    margin: 10px 0; /* Space above and below the date */
+    margin: 10px 0; 
     font-family: 'Days One', sans-serif;
     color: black;
 }
@@ -1368,4 +1474,25 @@ background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(185,250,255,1) 0
 
  #edit-product-form input[type="submit"]:hover {
     background-color: #e06aa1; 
+}
+
+.delete-product-button input[type="submit"]
+{
+    background-color: rgb(189, 15, 15);
+}
+
+.delete-product-button input[type="submit"]:hover
+{
+    background-color: rgb(235, 19, 19);
+}
+
+.blog-header 
+{
+    background-image: url('images/banner.png');
+    width: 40%;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
 }

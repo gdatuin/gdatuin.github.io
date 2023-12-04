@@ -1,25 +1,26 @@
 <?php
 session_start();
-
 include_once 'connect.php';
 
+
 $sortOption = filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING);
-
-
-$sort = 'product_name'; 
-$order = 'asc'; 
 $searchTerm = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING);
+$typeFilter = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
+
+
+$sort = 'product_name';
+$order = 'ASC';
 
 
 $sortOptions = [
-    'product_name_asc' => ['field' => 'product_name', 'order' => 'asc'],
-    'product_name_desc' => ['field' => 'product_name', 'order' => 'desc'],
-    'price_asc' => ['field' => 'price', 'order' => 'asc'],
-    'price_desc' => ['field' => 'price', 'order' => 'desc'],
-    'rating_asc' => ['field' => 'average_rating', 'order' => 'asc'],
-    'rating_desc' => ['field' => 'average_rating', 'order' => 'desc']
-
+    'product_name_asc' => ['field' => 'product_name', 'order' => 'ASC'],
+    'product_name_desc' => ['field' => 'product_name', 'order' => 'DESC'],
+    'price_asc' => ['field' => 'price', 'order' => 'ASC'],
+    'price_desc' => ['field' => 'price', 'order' => 'DESC'],
+    'rating_asc' => ['field' => 'average_rating', 'order' => 'ASC'],
+    'rating_desc' => ['field' => 'average_rating', 'order' => 'DESC'],
 ];
+
 
 if (array_key_exists($sortOption, $sortOptions)) {
     $sort = $sortOptions[$sortOption]['field'];
@@ -27,18 +28,36 @@ if (array_key_exists($sortOption, $sortOptions)) {
 }
 
 
-try {
-     $sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id";
-    if ($searchTerm) {
-        $sql .= " WHERE p.product_name LIKE :searchTerm";
-    }
-    $sql .= " GROUP BY p.product_id";
-    $sql .= " ORDER BY $sort $order";
+$sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, p.product_type, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id";
 
-    $stmt = $db->prepare($sql);
-    if ($searchTerm) {
-        $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%', PDO::PARAM_STR);
-    }
+
+$params = [];
+
+
+if ($searchTerm) {
+    $sql .= " WHERE (p.product_name LIKE :searchTerm OR p.product_type LIKE :searchTerm)";
+    $params[':searchTerm'] = '%' . $searchTerm . '%';
+}
+
+
+if ($typeFilter && $typeFilter != 'all') {
+    $sql .= $searchTerm ? " AND" : " WHERE"; 
+    $sql .= " p.product_type = :typeFilter";
+    $params[':typeFilter'] = $typeFilter;
+}
+
+
+$sql .= " GROUP BY p.product_id ORDER BY $sort $order";
+
+
+$stmt = $db->prepare($sql);
+
+
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value);
+}
+
+try {
     $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -46,6 +65,8 @@ try {
     $products = [];
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +91,13 @@ try {
 
         <?php include 'header.php'; ?>
 
+<!--         <div class="video-background">
+        <video autoplay loop muted>
+            <source src="images/testvideo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div> -->
+
     <main id="productsContent">
         <div class="productsHeader">
             <h1>PRODUCTS</h1>
@@ -83,12 +111,16 @@ try {
         </form>
 </div>
 
+
+
         <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['admin', 'content_manager', 'sales_manager'])): ?>
         <a href="add-product.php" class="add-product-button">Add Product</a>
     <?php endif; ?>
     
         <div class="sorting-options">
     <form action="" method="get">
+         <input type="hidden" name="type" value="<?= htmlspecialchars($typeFilter) ?>">
+        <input type="hidden" name="search" value="<?= htmlspecialchars($searchTerm) ?>">
         <label for="sorting">Sort by:</label>
         <select name="sort" id="sorting" onchange="this.form.submit()">
             <option value="product_name_asc" <?php if ($sortOption == 'product_name_asc') echo 'selected'; ?>>Name (A-Z)</option>
@@ -99,6 +131,12 @@ try {
             <option value="rating_desc" <?php if ($sortOption == 'rating_desc') echo 'selected'; ?>>Rating (High to Low)</option>
         </select>
     </form>
+    <nav class="product-type-nav">
+    <a href="?type=all<?= $searchTerm ? '&search=' . urlencode($searchTerm) : '' ?>&sort=<?= urlencode($sortOption) ?>">All</a>
+    <a href="?type=Tops">Tops</a>
+    <a href="?type=Bottoms">Bottoms</a>
+    <a href="?type=AccessoriesandFootwear">Accessories & Footwear</a>
+</nav>
 </div>
 
 

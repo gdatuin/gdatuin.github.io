@@ -135,9 +135,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
 </form>
 
 <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'content_manager')): ?>
-<form action="delete-product.php" method="post" onsubmit="return confirm('Are you sure you want to delete this product?');">
+<form action="delete-product.php" class= "delete-product-button" method="post" onsubmit="return confirm('Are you sure you want to delete this product?');">
     <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_id) ?>">
-    <input type="submit" name="delete_product" class="delete-product-button" value="Delete Product">
+    <input type="submit" name="delete_product" value="Delete Product">
 </form>
 <?php endif; ?>
 </div>

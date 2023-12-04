@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
     $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $inventory_count = filter_input(INPUT_POST, 'inventory_count', FILTER_SANITIZE_NUMBER_INT);
+    $product_type = filter_input(INPUT_POST, 'product_type', FILTER_SANITIZE_STRING);
+
     
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
@@ -62,18 +64,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die('Error: Price cannot be lower than 0.');
     }
 
+    if (!in_array($product_type, ['Tops', 'Bottoms', 'AccessoriesandFootwear'])) {
+        die('Error: Invalid product type.');
+    }
+
     if ($image) {
         try {
-            $stmt = $db->prepare("INSERT INTO products (product_name, description, price, inventory_count, image) VALUES (:product_name, :description, :price, :inventory_count, :image)");
+            $stmt = $db->prepare("INSERT INTO products (product_name, description, price, inventory_count, image, product_type) VALUES (:product_name, :description, :price, :inventory_count, :image, :product_type)");
             $stmt->bindParam(':product_name', $product_name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':price', $price);
             $stmt->bindParam(':inventory_count', $inventory_count);
             $stmt->bindParam(':image', $image);
+            $stmt->bindParam(':product_type', $product_type);
             $stmt->execute();
-            echo 'Product added successfully.';
-
-            header ("Location: products.php");
+            echo "<script>alert('Product Added Successfully!'); window.location.href='products.php';</script>"; 
             exit;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -115,6 +120,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <label for="image">Image:</label>
     <input type="file" name="image" id="image" required><br>
+
+    <label for="product_type">Product Type:</label>
+    <select name="product_type" id="product_type" required>
+    <option value="">Select a type</option>
+    <option value="Tops">Tops</option>
+    <option value="Bottoms">Bottoms</option>
+    <option value="AccessoriesandFootwear">Accessories & Footwear</option>
+    </select><br>
+
 
     <input type="submit" value="Add Product">
 </form>
