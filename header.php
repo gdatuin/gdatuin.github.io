@@ -13,10 +13,13 @@
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" href="#">
 </head>
+
+    
+        
     
 
         <header id="mainPageHeader">
-        
+
         <div class="logo">
         <a href="index.php">
         <img src="images/lumi-logo.png" alt="LUMi">

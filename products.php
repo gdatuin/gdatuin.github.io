@@ -27,10 +27,26 @@ if (array_key_exists($sortOption, $sortOptions)) {
     $order = $sortOptions[$sortOption]['order'];
 }
 
+$countSql = "SELECT COUNT(*) FROM products";
+if ($typeFilter && $typeFilter != 'all') {
+    $countSql .= " WHERE product_type = :typeFilter";
+}
 
-$sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, p.product_type, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id";
+$countStmt = $db->prepare($countSql);
+if ($typeFilter && $typeFilter != 'all') {
+    $countStmt->bindValue(':typeFilter', $typeFilter, PDO::PARAM_STR);
+}
+$countStmt->execute();
+$totalProducts = $countStmt->fetchColumn();
 
+$productsPerPage = 8;
+$totalPages = ceil($totalProducts / $productsPerPage);
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = max($page, 1); 
+$page = min($page, $totalPages); 
+$offset = ($page - 1) * $productsPerPage;
 
+$sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id";
 $params = [];
 
 
@@ -47,15 +63,14 @@ if ($typeFilter && $typeFilter != 'all') {
 }
 
 
-$sql .= " GROUP BY p.product_id ORDER BY $sort $order";
-
+$sql .= " GROUP BY p.product_id ORDER BY $sort $order LIMIT :limit OFFSET :offset";
 
 $stmt = $db->prepare($sql);
-
-
 foreach ($params as $key => $value) {
     $stmt->bindValue($key, $value);
 }
+$stmt->bindValue(':limit', $productsPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
 try {
     $stmt->execute();
@@ -157,6 +172,13 @@ try {
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <div class="pages">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?page=<?= $i ?>&<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+    </div>
+
     </main>
 
     <?php include 'footer.php'; ?>

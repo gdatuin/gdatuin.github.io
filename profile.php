@@ -14,7 +14,7 @@ require 'connect.php';
 try {
     
     $userId = $_SESSION['user_id']; 
-    $userQuery = "SELECT username, email FROM users WHERE user_id = :user_id";
+    $userQuery = "SELECT first_name, username, email FROM users WHERE user_id = :user_id";
 
     $statement = $db->prepare($userQuery);
     $statement->execute(['user_id' => $userId]);
@@ -50,8 +50,9 @@ try {
 
     <div class="profile-container">
        
-        <h1>Welcome, <?= htmlspecialchars($userData['username']); ?></h1>
-        <p>Email: <?= htmlspecialchars($userData['email']); ?></p>
+        <h1>Welcome, <?= ($userData['first_name']); ?></h1>
+        <p>Email: <?=($userData['email']); ?></p>
+        <p>Username: <?=($userData['username']); ?></p>
  
 
     </div>

@@ -4,8 +4,6 @@ require_once 'connect.php';
 
 function displayBlogPosts($db) {
 
-
-    // Fetch and display blog posts
     $stmt = $db->query("SELECT * FROM blog_posts ORDER BY post_date DESC");
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $imageClass = !empty($row['blog_image']) ? 'with-image' : 'without-image';
@@ -18,12 +16,11 @@ function displayBlogPosts($db) {
         echo '<p class="post-date">Posted on ' . htmlspecialchars($row['post_date']) . '</p>';
         echo '<p class="post-content">' . ($row['content']) . '</p>';
 
-        // Check if the session indicates that the user is logged in and has the correct role
          if (isset($_SESSION['loggedin']) && in_array($_SESSION['role'], ['admin', 'content_manager'])) {
             echo '<a href="edit-post.php?post_id=' . $row['post_id'] . '" class="edit-post-button">Edit Post</a>';
         }
-        echo '</div>'; // .post-text
-        echo '</div>'; // .blog-post
+        echo '</div>'; 
+        echo '</div>'; 
     
     }
 }
@@ -66,7 +63,6 @@ function displayCreateButton() {
     </div>
 </main>
 
-    <!-- Include footer -->
   
 
 </body>

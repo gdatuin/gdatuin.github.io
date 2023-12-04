@@ -33,6 +33,7 @@ if ($product_id) {
             $price = $product['price'];
             $inventory_count = $product['inventory_count'];
             $image = $product['image'];
+            $product_type = $product['product_type'];
         } else {
             die('Product not found.');
         }
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
     $price = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT);
     $inventory_count = filter_input(INPUT_POST, 'inventory_count', FILTER_VALIDATE_INT);
-    
+    $product_type = filter_input(INPUT_POST, 'product_type', FILTER_SANITIZE_STRING);
 
      if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed = ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
@@ -73,16 +74,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
     } else {
         echo 'Error: ' . $_FILES['image']['error'];
     }
+
+    if ($inventory_count < 0)
+    {
+        die('Error: Inventory count cannot be listed as negative.');
+    }
+
+    if ($price < 0)
+    {
+        die('Error: Price cannot be lower than 0.');
+    }
+
+    if (!in_array($product_type, ['Tops', 'Bottoms', 'AccessoriesandFootwear'])) {
+        die('Error: Invalid product type.');
+    }
     
 
     try {
-        $stmt = $db->prepare("UPDATE products SET product_name = :product_name, description = :description, price = :price, inventory_count = :inventory_count, image = :image WHERE product_id = :product_id");
+        $stmt = $db->prepare("UPDATE products SET product_name = :product_name, description = :description, price = :price, inventory_count = :inventory_count, image = :image, product_type = :product_type WHERE product_id = :product_id");
         $stmt->bindParam(':product_name', $product_name);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':inventory_count', $inventory_count);
         $stmt->bindParam(':image', $image); 
         $stmt->bindParam(':product_id', $product_id);
+        $stmt->bindParam(':product_type', $product_type);
         $stmt->execute();
         
         echo 'Product updated successfully.';
@@ -130,6 +146,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
     <label for="image">Image:</label>
     <input type="file" name="image" id="image"><br>
     Current Image: <img src="images/<?= htmlspecialchars($image) ?>" alt="Current Image" width="100"><br>
+
+    <label for="product_type">Product Type:</label>
+    <select name="product_type" id="product_type" required>
+    <option value="">Select a type</option>
+    <option value="Tops">Tops</option>
+    <option value="Bottoms">Bottoms</option>
+    <option value="AccessoriesandFootwear">Accessories & Footwear</option>
+    </select><br>
 
     <input type="submit" name="update_product" class= "update-product-button" value="Update Product">
 </form>

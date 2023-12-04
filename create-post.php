@@ -1,19 +1,18 @@
 <?php
 session_start();
 
-// Database connection file
+
 require_once 'connect.php';
 
-// Redirect if not logged in or not an admin/content_manager
+
 if (!isset($_SESSION['loggedin']) || !in_array($_SESSION['role'], ['admin', 'content_manager'])) {
     header('Location: index.php');
 }
 
-// Initialize variables
 $imageFileName = null;
 $postCreated = false;
 
-// Handle file upload
+
 if (isset($_FILES['blog_image']) && $_FILES['blog_image']['error'] === UPLOAD_ERR_OK) {
     $allowed = ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
     $file_name = $_FILES['blog_image']['name'];
@@ -34,13 +33,11 @@ if (isset($_FILES['blog_image']) && $_FILES['blog_image']['error'] === UPLOAD_ER
     }
 }
 
-// Handle blog post submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create-post'])) {
     $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
     $content = filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW);
     $userId = $_SESSION['user_id'] ?? null;
 
-    // Insert data into database
     $sql = "INSERT INTO blog_posts (title, content, post_date, user_id, blog_image) VALUES (:title, :content, NOW(), :user_id, :blog_image)";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':title', $title);
@@ -68,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create-post'])) {
 <body id = "create-post">
     <?php include 'header.php'; ?>
 
-    <main>
+    <main class = "main-create-post">
         <form action="create-post.php" method="post" enctype="multipart/form-data" id= "create-post-form">
             <div>
                 <label for="title">Title:</label>

@@ -51,35 +51,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        if ($user_id) {
-            $stmt = $db->prepare("INSERT INTO reviews (product_id, user_id, rating, review_text, review_image) VALUES (:product_id, :user_id, :rating, :review_text, :review_image)");
-            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        } else {
-            $stmt = $db->prepare("INSERT INTO reviews (product_id, guest_name, rating, review_text, review_image) VALUES (:product_id, :guest_name, :rating, :review_text, :review_image)");
-            $stmt->bindParam(':guest_name', $guest_name, PDO::PARAM_STR);
-        }
-
-        $product_id = $formData['product_id'];
-        $rating = $formData['rating'];
-        $review_text = $formData['review_text'];
-        $review_image = $formData['review_image'];
-
+        $stmt = $db->prepare("INSERT INTO reviews (product_id, user_id, guest_name, rating, review_text, review_image) VALUES (:product_id, :user_id, :guest_name, :rating, :review_text, :review_image)");
         
-        $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
-        $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
-        $stmt->bindParam(':review_text', $review_text, PDO::PARAM_STR);
-        $stmt->bindParam(':review_image', $imageFileName, $imageFileName ? PDO::PARAM_STR : PDO::PARAM_NULL);
+    
+        $stmt->bindValue(':user_id', $_SESSION['user_id'] ?? NULL, PDO::PARAM_INT);
+        $stmt->bindValue(':guest_name', $formData['guest_name'] ?? NULL, PDO::PARAM_STR);
+
+        $stmt->bindValue(':product_id', $formData['product_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':rating', $formData['rating'], PDO::PARAM_INT);
+        $stmt->bindValue(':review_text', $formData['review_text'], PDO::PARAM_STR);
+        $stmt->bindValue(':review_image', $imageFileName, $imageFileName ? PDO::PARAM_STR : PDO::PARAM_NULL);
+        
         $stmt->execute();
 
+
         $_SESSION['review_success_message'] = "Review submitted successfully!";
-        header("Location: product.php?id=$product_id");
+        header("Location: product.php?id=" . $formData['product_id']);
         exit;
     } catch (PDOException $e) {
+
         $_SESSION['review_error_message'] = "Failed to submit the review: " . $e->getMessage();
-        header("Location: product.php?id=$product_id");
+        header("Location: product.php?id=" . $formData['product_id']);
         exit;
     }
 } else {
+
     header("Location: index.php");
     exit;
 }

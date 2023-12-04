@@ -18,6 +18,7 @@ $inventory_count = '';
 $image = '';
 
 
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $product_name = filter_input(INPUT_POST, 'product_name', FILTER_SANITIZE_STRING);
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);

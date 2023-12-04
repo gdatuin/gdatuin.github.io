@@ -2,13 +2,13 @@
 session_start();
 require_once 'connect.php';
 
-// Check if the user is logged in and has the right role
+
 if (!isset($_SESSION['loggedin']) || !in_array($_SESSION['role'], ['admin', 'content_manager'])) {
     header('Location: index.php');
     exit;
 }
 
-// Fetch post data from the database
+
 if (isset($_GET['post_id'])) {
     $postId = $_GET['post_id'];
     $stmt = $db->prepare("SELECT * FROM blog_posts WHERE post_id = :post_id");
@@ -21,18 +21,18 @@ if (isset($_GET['post_id'])) {
     exit('No post ID provided.');
 }
 
-// Check if the form was submitted
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_post'])) {
-    // Sanitize and validate the input
+
     $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
     $content = filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW);
 
 
 
     $userId = $_SESSION['user_id'] ?? null;
-    $imageFileName = $post['blog_image']; // Start with the current image
+    $imageFileName = $post['blog_image']; 
 
-    // Handling file upload
+   
     if (isset($_FILES['blog_image']) && $_FILES['blog_image']['error'] == 0) {
         $allowed = ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
         $file_name = $_FILES['blog_image']['name'];
@@ -45,13 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_post'])) {
         }
 
         if (in_array($file_type, $allowed)) {
-            $imageFileName = basename($file_name); // Sanitize the file name
+            $imageFileName = basename($file_name); 
             move_uploaded_file($_FILES['blog_image']['tmp_name'], "blog_images/" . $imageFileName);
         } else {
             echo 'Error: There was a problem uploading your file. Please try again.';
         }
     } elseif (isset($_POST['delete_image'])) {
-        // Delete current image if checkbox is checked
+       
         if (file_exists("blog_images/" . $imageFileName)) {
             unlink("blog_images/" . $imageFileName);
         }
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_post'])) {
     }
 
     try {
-        // Prepare the UPDATE SQL statement
+        
         $sql = "UPDATE blog_posts SET title = :title, content = :content, blog_image = :blog_image WHERE post_id = :post_id";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':title', $title);
@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_post'])) {
         $stmt->bindParam(':blog_image', $imageFileName);
         $stmt->bindParam(':post_id', $postId);
 
-        // Execute the statement and check if the update was successful
+       
         if ($stmt->execute()) {
-            // Redirect only after a successful update
+            
             header('Location: index.php');
             exit;
         } else {
-            // Handle error if the update was not successful
+            
             echo "Error updating post.";
         }
     } catch (PDOException $e) {
@@ -93,11 +93,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_post'])) {
         tinymce.init({ selector: '#content' });
     </script>
 </head>
-<body>
+<body id="edit-post">
     <?php include 'header.php'; ?>
 
     <main>
-        <form action="edit-post.php?post_id=<?= $post['post_id'] ?>" method="post" enctype="multipart/form-data" id = "edit-post-form">
+        <form action="edit-post.php?post_id=<?= $post['post_id'] ?>" method="post" enctype="multipart/form-data" id ="edit-post-form" onsubmit="return confirm('Are you sure you want to update this post?');">
             <div>
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" value="<?= htmlspecialchars($post['title']) ?>" required>
@@ -118,12 +118,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_post'])) {
             <div>
                 <input type="submit" name="update_post" value="Update Post">
             </form>
-                <?php if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'content_manager')): ?>
+
 <form action="delete-post.php" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
     <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
     <input type="submit" name="delete_post" class="delete-post-button" value="Delete Post">
 </form>
-<?php endif; ?>
+
             </div>
         
     </main>

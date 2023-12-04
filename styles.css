@@ -99,10 +99,45 @@ body#profile
     background-image: url("images/profile-background.png");
 }
 
+body#add-employee
+{
+    background-image: url("images/profile-background.png");
+}
+
+body#manage-employees
+{
+    background-image: url("images/profile-background.png");
+}
+
+body#terminate-employee
+{
+    background-image: url("images/profile-background.png");
+}
+
+
+body#create-post
+{
+    background-image: url("images/blog-post-background.png");
+    
+}
+
+body#edit-post
+{
+    background-image: url("images/blog-post-background.png");
+    
+}
+
+.main-create-post
+{
+    height: 62vh;
+
+}
+
 #loginPage
 {
-    height: 61vh;
+    height: 61.4vh;
 }
+
 
 
 header{
@@ -110,8 +145,8 @@ header{
     padding-right: 0;
     display: flex;
     
-   
-    background: linear-gradient(180deg, rgba(91,171,214,1) 0%, rgba(255,255,255,1) 100%); 
+
+     background: linear-gradient(180deg, rgba(91,171,214,1) 0%, rgba(255,255,255,1) 100%); 
     
 }
 
@@ -235,7 +270,7 @@ div.introImg
     box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
     -webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(191,191,191,0); 
     box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(191,191,191,0);
-    width: auto;
+    width: 100%;
     
 }
 
@@ -406,7 +441,6 @@ footer{
     margin: 0%;
     background-color: lightblue;
     
-    
 }
 
 footer ul{
@@ -574,12 +608,13 @@ div.productsHeader {
    
 }
 div.productsHeader h1{
-
+    width: fit-content;
     margin-top: 3.5%;
     color: white;
     font-family: 'Russo One',sans-serif;
     text-shadow: 4px 3px 0 #0c3446;
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
     font-size: 2.5vw;
     
 }
@@ -674,10 +709,10 @@ div.listOfProducts img
   transform: translateX(-50px);
 
 
-  animation: fadeInLeft 0.9s ease forwards;
+  animation: fadeInUp 0.9s ease forwards;
 }
 
-@keyframes fadeInLeft {
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -737,7 +772,25 @@ div.listOfProducts img
   max-width: 36%; 
   padding: 50px;
   text-align: left;
+
+     opacity: 0;
+  transform: translateX(-50px);
+
+
+  animation: fadeInLeft 0.9s ease forwards;
 }
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 
 .product-description {
     font-family: 'Russo One',sans-serif;
@@ -1056,8 +1109,9 @@ form#submit-review-form {
 
 form#submit-review-form label {
     display: block; 
-    margin-bottom: 5px; 
+    margin: 5px; 
     color: #333; 
+
 }
 form#submit-review-form input[type="text"],
 form#submit-review-form select,
@@ -1197,9 +1251,11 @@ form#submit-review-form textarea {
 
 .search-form-container {
     text-align: center; 
+    margin-top: 20px;
     margin-bottom: 20px; 
     font-family: 'Bruno Ace', sans-serif;
 }
+
 
 .search-form-container form {
     display: inline-block; 
@@ -1219,6 +1275,7 @@ form#submit-review-form textarea {
     background-color: #5CB85C;
     color: white;
     border-color: #4CAE4C;
+    font-family: 'Bruno Ace', sans-serif;
 }
 
 .search-form-container input[type="submit"]:hover {
@@ -1495,4 +1552,230 @@ background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(185,250,255,1) 0
     margin-right: auto;
     border-radius: 10px;
     box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+}
+
+.pages 
+{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.pages a{
+     display: inline-block;
+    height: 60px;
+    width: 60px;
+    line-height: 60px;
+    margin-left: 20px;
+    margin-right: 20px;
+    -moz-border-radius: 30px; 
+    border-radius: 30px; 
+    background: rgb(255,255,255);
+background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%, rgba(255,255,255,1) 100%);
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-size: 2em;
+    text-decoration: none;
+    font-family: 'Bruno Ace', sans-serif;
+
+}
+
+.pages a:hover {
+
+    background:rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    transition: 0.2s;
+}
+
+#add-employee-form {
+    max-width: 600px; 
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: 'Russo One', sans-serif;
+}
+
+
+#add-employee-form label{
+    display: block; 
+    margin-top: 10px;
+    margin-bottom: 5px; 
+    color: #333; 
+    font-size: 1.1em;
+}
+
+
+ #add-employee-form input[type="text"],
+ #add-employee-form select {
+    width: 90%;
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ #add-employee-form input[type="submit"] {
+    background-color: #5CB85C; 
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
+    font-family: 'Bruno Ace', sans;
+    margin-top: 20px;
+}
+
+ #add-employee-form input[type="submit"]:hover {
+    background-color: #4CAE4C; /
+}
+
+
+.manage-employees-container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.manage-employees-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.manage-employees-table th,
+.manage-employees-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.manage-employees-table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.manage-employees-table tr:nth-child(even) {
+    background-color: rgb(249, 249, 249);
+}
+
+.manage-employees-table tr:nth-child(odd) {
+    background-color: #d2cfcf;
+}
+
+.manage-employees-table select,
+.manage-employees-table textarea {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.manage-employees-table textarea {
+    resize: vertical;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+
+
+.manage-employees-container form {
+    margin-bottom: 20px;
+}
+
+.add-employee-button {
+    display: inline-block; 
+    padding: 10px 20px;
+    margin: 10px; 
+    background-color: #4CAF50; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.add-employee-button:hover {
+    background-color: #367C39; 
+}
+
+.terminate-employee-button {
+    display: inline-block; 
+    padding: 10px 20px;
+    margin: 10px; 
+    background-color: rgb(134, 17, 17); 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    
+
+}
+
+.terminate-employee-button:hover {
+    background-color: rgb(124, 54, 54); 
+}
+
+.terminate-employee-container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.terminate-employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.terminate-employee-table th,
+.terminate-employee-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.terminate-employee-table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.terminate-employee-table tr:nth-child(even) {
+    background-color: rgb(249, 249, 249);
+}
+
+.terminate-employee-table tr:nth-child(odd) {
+    background-color: #d2cfcf;
+}
+
+.terminate-employee-table select,
+.terminate-employee-table textarea {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.terminate-employee-table textarea {
+    resize: vertical;
+    margin-left: 30px;
+    margin-right: 30px;
 }
