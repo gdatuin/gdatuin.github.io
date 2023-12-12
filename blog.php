@@ -3,8 +3,9 @@
 require_once 'connect.php';
 
 function displayBlogPosts($db) {
-
-    $stmt = $db->query("SELECT * FROM blog_posts ORDER BY post_date DESC");
+    
+    $stmt = $db->query("SELECT *, CONCAT(u.first_name, ' ', u.last_name) AS author_full_name FROM blog_posts bp LEFT JOIN users u ON bp.user_id = u.user_id ORDER BY post_date DESC");
+    
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $imageClass = !empty($row['blog_image']) ? 'with-image' : 'without-image';
         echo '<div class="blog-post ' . $imageClass . '">';
@@ -13,15 +14,15 @@ function displayBlogPosts($db) {
         }
         echo '<div class="post-text">';
         echo '<h2 class="post-title">' . htmlspecialchars($row['title']) . '</h2>';
-        echo '<p class="post-date">Posted on ' . htmlspecialchars($row['post_date']) . '</p>';
+      
+        echo '<p class="post-date">Posted on ' . htmlspecialchars($row['post_date']) . ' by ' . htmlspecialchars($row['author_full_name']) . '</p>';
         echo '<p class="post-content">' . ($row['content']) . '</p>';
 
-         if (isset($_SESSION['loggedin']) && in_array($_SESSION['role'], ['admin', 'content_manager'])) {
+        if (isset($_SESSION['loggedin']) && in_array($_SESSION['role'], ['admin', 'content_manager'])) {
             echo '<a href="edit-post.php?post_id=' . $row['post_id'] . '" class="edit-post-button">Edit Post</a>';
         }
         echo '</div>'; 
         echo '</div>'; 
-    
     }
 }
 

@@ -25,7 +25,7 @@ try {
         } else {
             $stockStatus = "IN STOCK";
 
-            if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'sales_manager')) {
+            if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'sales_manager' || $_SESSION['role'] == 'sales_associate')) {
                 $stockStatus .= " (Available: " . $product['inventory_count'] . ")";
             }
         }
@@ -176,10 +176,11 @@ $starRatingHtml = str_repeat('&#9733;', floor($averageRating)) . str_repeat('&#9
                     <label for="review_image">Upload Image:</label>
                     <input type="file" id="review_image" name="review_image" accept="image/*">
 
-                    
+                    <?php if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true): ?>
                      <label for="captcha">Enter CAPTCHA:</label>
                     <img src="captcha.php" alt="CAPTCHA">
-                    <input type="text" id="captcha" name="captcha" required>
+                    <br><input type="text" id="captcha" name="captcha" required>
+                    <?php endif; ?>
                     
                    <br><button type="submit" name="submit_review" class="submit-review-button">Submit Review</button></br>
                     

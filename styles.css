@@ -40,6 +40,10 @@ body#contact-us{
 body#login{
    
     background-image: url("images/contactus-background.png");
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
 
  
 }
@@ -97,45 +101,63 @@ body#add-product
 body#profile
 {
     background-image: url("images/profile-background.png");
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
 }
 
 body#add-employee
 {
-    background-image: url("images/profile-background.png");
+    background-image: url("images/employee-management-background.png");
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
 }
 
 body#manage-employees
 {
-    background-image: url("images/profile-background.png");
+    background-image: url("images/employee-management-background.png");
+     display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
 }
 
 body#terminate-employee
 {
-    background-image: url("images/profile-background.png");
+    background-image: url("images/employee-management-background.png");
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
 }
 
 
 body#create-post
 {
     background-image: url("images/blog-post-background.png");
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
     
 }
 
 body#edit-post
 {
     background-image: url("images/blog-post-background.png");
+    display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
     
 }
 
-.main-create-post
+.main-profile
 {
-    height: 62vh;
-
-}
-
-#loginPage
-{
-    height: 61.4vh;
+    animation: fadeSlideDown 0.7s ease-in-out forwards;
 }
 
 
@@ -440,6 +462,7 @@ div.newestProductsItems p{
 footer{
     margin: 0%;
     background-color: lightblue;
+    margin-top: auto;
     
 }
 
@@ -670,20 +693,23 @@ div.listOfProducts img
 }
 
 .add-product-button {
-    display: inline-block; 
+    display: flex; 
     padding: 10px 20px;
     margin: 10px; 
-    background-color: #4CAF50; 
+    background-color: rgb(118, 199, 219); 
     color: white;
     text-decoration: none;
     border-radius: 5px;
     text-align: center;
     font-family: 'Russo One', sans-serif;
     transition: background-color 0.3s ease;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
 }
 
 .add-product-button:hover {
-    background-color: #367C39; 
+    background-color: rgb(86, 182, 206); 
 }
 
 .productItem {
@@ -722,6 +748,7 @@ div.listOfProducts img
     transform: translateY(0);
   }
 }
+
 
 .edit-product-button:hover {
     background-color: #367C39; 
@@ -783,7 +810,7 @@ div.listOfProducts img
 @keyframes fadeInLeft {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(30px);
   }
   to {
     opacity: 1;
@@ -792,14 +819,17 @@ div.listOfProducts img
 }
 
 
-.product-description {
+.product-description{
     font-family: 'Russo One',sans-serif;
   margin-top: 20px; 
   padding: 15px; 
   background: #fff; 
   border: 3px solid #000000; 
   border-radius: 10px; 
+
 }
+
+
 
 .product-details h1 {
   background: #e7e5e4;
@@ -985,6 +1015,7 @@ div.listOfProducts a:hover{
 
 
 .edit-product-form label{
+    margin-top: 10px;
     display: block; 
     margin-bottom: 5px; 
     color: #333; 
@@ -1578,6 +1609,7 @@ background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%
     font-size: 2em;
     text-decoration: none;
     font-family: 'Bruno Ace', sans-serif;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
 }
 
@@ -1650,6 +1682,7 @@ background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    overflow-y: auto; 
 }
 
 .manage-employees-table th,
@@ -1723,6 +1756,7 @@ background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%
     font-weight: bold;
     transition: background-color 0.3s ease;
     
+    
 
 }
 
@@ -1737,6 +1771,7 @@ background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
 }
 
 
@@ -1744,6 +1779,8 @@ background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    overflow-y: auto; 
+
 }
 
 .terminate-employee-table th,
@@ -1778,4 +1815,56 @@ background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(238,146,229,1) 0%
     resize: vertical;
     margin-left: 30px;
     margin-right: 30px;
+}
+
+.profile-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    font-family: 'Bruno Ace', sans-serif;
+}
+
+.profile-container h1 {
+    font-family: 'Russo One', sans-serif;
+    color: #333;
+}
+
+.manage-employees-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.manage-employees-button:hover {
+    background-color: #367C39;
+}
+
+.logout-form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.logout-button {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
 }

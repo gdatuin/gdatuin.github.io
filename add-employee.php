@@ -66,8 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <label for="role">Role:</label>
             <select id="role" name="role">
-                <option value="sales_manager">Sales Manager</option>
                 <option value="content_manager">Content Manager</option>
+                <option value="sales_manager">Sales Manager</option>                
+                <option value="sales_associate">Sales Associate</option>
             </select><br>
 
             <input type="submit" value="Add Employee">

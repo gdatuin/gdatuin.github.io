@@ -15,6 +15,13 @@ function fetchEmployees($db, $currentUserId) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+$roleNames = [
+    'admin' => 'Admin',
+    'content_manager' => 'Content Manager',
+    'sales_manager' => 'Sales Manager',
+    'sales_associate' => 'Sales Associate'
+];
+
 $currentUserId = $_SESSION['user_id']; 
 $employees = fetchEmployees($db, $currentUserId);
 
@@ -71,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['terminate_employee']))
                         <td><?= ($employee['full_name']) ?></td>
                         <td><?= ($employee['username']) ?></td>
                         <td><?= ($employee['email']) ?></td>
-                        <td><?= ($employee['role']) ?></td>
+                        <td><?= $roleNames[$employee['role']] ?></td>
                         <td>
                              <form method="post" onsubmit="return confirm('Are you sure you want to terminate this employee?');">
                             <input type="hidden" name="user_id" value="<?= $employee['user_id'] ?>">

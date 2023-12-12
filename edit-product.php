@@ -1,15 +1,11 @@
 <?php
-
 session_start();
-
-
 require 'connect.php';
-
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'content_manager', 'sales_manager'])) {
     header('Location: products.php');
+    exit;
 }
-
 
 $product_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $product_name = '';
@@ -17,7 +13,16 @@ $description = '';
 $price = '';
 $inventory_count = '';
 $image = '';
+$category_id = '';
 
+
+$categories = [];
+try {
+    $categoryStmt = $db->query("SELECT * FROM categories");
+    $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error: " . $e->getMessage());
+}
 
 if ($product_id) {
     try {
@@ -27,13 +32,12 @@ if ($product_id) {
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($product) {
-
             $product_name = $product['product_name'];
             $description = $product['description'];
             $price = $product['price'];
             $inventory_count = $product['inventory_count'];
             $image = $product['image'];
-            $product_type = $product['product_type'];
+            $category_id = $product['category_id'];
         } else {
             die('Product not found.');
         }
@@ -42,14 +46,25 @@ if ($product_id) {
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
 
     $product_name = filter_input(INPUT_POST, 'product_name', FILTER_SANITIZE_STRING);
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
     $price = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT);
     $inventory_count = filter_input(INPUT_POST, 'inventory_count', FILTER_VALIDATE_INT);
-    $product_type = filter_input(INPUT_POST, 'product_type', FILTER_SANITIZE_STRING);
+    $category_id = filter_input(INPUT_POST, 'category_id', FILTER_SANITIZE_NUMBER_INT);
+    $newCategoryName = filter_input(INPUT_POST, 'new_category_name', FILTER_SANITIZE_STRING);
+
+
+    if ($newCategoryName) {
+        try {
+            $newCategoryStmt = $db->prepare("INSERT INTO categories (category_name) VALUES (:category_name)");
+            $newCategoryStmt->execute([':category_name' => $newCategoryName]);
+            $category_id = $db->lastInsertId(); 
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+    }
 
      if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed = ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
@@ -85,23 +100,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
         die('Error: Price cannot be lower than 0.');
     }
 
-    if (!in_array($product_type, ['Tops', 'Bottoms', 'AccessoriesandFootwear'])) {
-        die('Error: Invalid product type.');
-    }
     
 
-    try {
-        $stmt = $db->prepare("UPDATE products SET product_name = :product_name, description = :description, price = :price, inventory_count = :inventory_count, image = :image, product_type = :product_type WHERE product_id = :product_id");
-        $stmt->bindParam(':product_name', $product_name);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':price', $price);
-        $stmt->bindParam(':inventory_count', $inventory_count);
-        $stmt->bindParam(':image', $image); 
-        $stmt->bindParam(':product_id', $product_id);
-        $stmt->bindParam(':product_type', $product_type);
-        $stmt->execute();
-        
-        echo 'Product updated successfully.';
+ try {
+        $updateStmt = $db->prepare("UPDATE products SET product_name = :product_name, description = :description, price = :price, inventory_count = :inventory_count, image = :image, category_id = :category_id WHERE product_id = :product_id");
+        $updateStmt->bindParam(':product_name', $product_name);
+        $updateStmt->bindParam(':description', $description);
+        $updateStmt->bindParam(':price', $price);
+        $updateStmt->bindParam(':inventory_count', $inventory_count);
+        $updateStmt->bindParam(':image', $image); 
+        $updateStmt->bindParam(':category_id', $category_id);
+        $updateStmt->bindParam(':product_id', $product_id);
+        $updateStmt->execute();
+
         header('Location: product.php?id=' . $product_id);
         exit;
     } catch (PDOException $e) {
@@ -147,13 +158,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
     <input type="file" name="image" id="image"><br>
     Current Image: <img src="images/<?= htmlspecialchars($image) ?>" alt="Current Image" width="100"><br>
 
-    <label for="product_type">Product Type:</label>
-    <select name="product_type" id="product_type" required>
-    <option value="">Select a type</option>
-    <option value="Tops">Tops</option>
-    <option value="Bottoms">Bottoms</option>
-    <option value="AccessoriesandFootwear">Accessories & Footwear</option>
-    </select><br>
+    <label for="category_id">Category:</label>
+            <select name="category_id" id="category_id" required>
+                <option value="">Select a category</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?= $category['category_id'] ?>">
+                        <?= ($category['category_name']) ?>
+                    </option>
+                <?php endforeach; ?>
+                <option value="new">Add new category</option>
+            </select><br>
+
+            <div id="new-category" style="display: none;">
+                <label for="new_category_name">New Category Name:</label>
+                <input type="text" name="new_category_name" id="new_category_name"><br>
+            </div>
 
     <input type="submit" name="update_product" class= "update-product-button" value="Update Product">
 </form>
@@ -167,6 +186,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
 </div>
 
 <?php include 'footer.php'; ?>
+
+ <script>
+
+            document.getElementById('category_id').addEventListener('change', function() {
+                var display = this.value === 'new' ? 'block' : 'none';
+                document.getElementById('new-category').style.display = display;
+            });
+        </script>
 
 </body>
 </html>

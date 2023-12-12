@@ -84,7 +84,7 @@ try {
     <?php endforeach; ?>
 </div>
 
-<h2 class = "blog-header"> Blog </h2>
+<h2 class = "blog-header"> 🟆 Blog 🟆 </h2>
 <?php include 'blog.php'; ?>
        </main>
 

@@ -11,12 +11,15 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin','content_
 }
 
 
+
 $product_name = '';
 $description = '';
 $price = '';
 $inventory_count = '';
 $image = '';
+$category_id = '';
 
+$categories = $db->query("SELECT category_id, category_name FROM categories")->fetchAll(PDO::FETCH_ASSOC);
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -55,6 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo 'Error: ' . $_FILES['image']['error'];
     }
 
+     if (isset($_POST['category']) && $_POST['category'] === 'new' && !empty($_POST['new_category_name'])) {
+        $newCategoryName = filter_input(INPUT_POST, 'new_category_name', FILTER_SANITIZE_STRING);
+        $insertCategoryStmt = $db->prepare("INSERT INTO categories (category_name) VALUES (?)");
+        $insertCategoryStmt->execute([$newCategoryName]);
+        $category_id = $db->lastInsertId();
+    } else {
+        $category_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+    }
+
     if ($inventory_count < 0)
     {
         die('Error: Inventory count cannot be listed as negative.');
@@ -65,19 +77,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die('Error: Price cannot be lower than 0.');
     }
 
-    if (!in_array($product_type, ['Tops', 'Bottoms', 'AccessoriesandFootwear'])) {
-        die('Error: Invalid product type.');
-    }
 
     if ($image) {
         try {
-            $stmt = $db->prepare("INSERT INTO products (product_name, description, price, inventory_count, image, product_type) VALUES (:product_name, :description, :price, :inventory_count, :image, :product_type)");
+            $stmt = $db->prepare("INSERT INTO products (product_name, description, price, inventory_count, image, category_id) VALUES (:product_name, :description, :price, :inventory_count, :image, :category_id)");
             $stmt->bindParam(':product_name', $product_name);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':price', $price);
             $stmt->bindParam(':inventory_count', $inventory_count);
             $stmt->bindParam(':image', $image);
-            $stmt->bindParam(':product_type', $product_type);
+            $stmt->bindParam(':category_id', $category_id);
             $stmt->execute();
             echo "<script>alert('Product Added Successfully!'); window.location.href='products.php';</script>"; 
             exit;
@@ -122,19 +131,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <label for="image">Image:</label>
     <input type="file" name="image" id="image" required><br>
 
-    <label for="product_type">Product Type:</label>
-    <select name="product_type" id="product_type" required>
-    <option value="">Select a type</option>
-    <option value="Tops">Tops</option>
-    <option value="Bottoms">Bottoms</option>
-    <option value="AccessoriesandFootwear">Accessories & Footwear</option>
+
+    <label for="category">Category:</label>
+    <select name="category" id="category" required onchange="showNewCategoryInput()">
+        <option value="">Select a category</option>
+        <?php foreach ($categories as $category): ?>
+            <option value="<?= ($category['category_id']) ?>"><?= ($category['category_name']) ?></option>
+        <?php endforeach; ?>
+        <option value="new">Add new category...</option>
     </select><br>
+
+
+    <div id="new-category" style="display:none;">
+        <label for="new_category_name">New Category Name:</label>
+        <input type="text" name="new_category_name" id="new_category_name"><br>
+    </div>
 
 
     <input type="submit" value="Add Product">
 </form>
 
 <?php include 'footer.php';?>
+
+<script>
+
+function showNewCategoryInput() {
+    var categorySelect = document.getElementById('category');
+    var newCategoryInput = document.getElementById('new-category');
+    if (categorySelect.value === 'new') {
+        newCategoryInput.style.display = 'block';
+    } else {
+        newCategoryInput.style.display = 'none';
+    }
+}
+</script>
 
 </body>
 </html>

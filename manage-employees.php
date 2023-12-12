@@ -17,6 +17,13 @@ function fetchEmployees($db) {
 
 $employees = fetchEmployees($db);
 
+$roleNames = [
+    'admin' => 'Admin',
+    'content_manager' => 'Content Manager',
+    'sales_manager' => 'Sales Manager',
+    'sales_associate' => 'Sales Associate'
+];
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_role'])) {
     $userId = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
@@ -83,8 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_role'])) {
                         <td><?= ($employee['full_name']) ?></td>
                         <td><?= ($employee['username']) ?></td>
                         <td><?= ($employee['email']) ?></td>
-                        <td><?= ($employee['role']) ?></td>
+                        <td><?= $roleNames[$employee['role']] ?></td>
                         <td>
+                            <?php if ($employee['user_id'] != $_SESSION['user_id'] || $_SESSION['role'] !== 'admin'): ?>
                             <form method="post" onsubmit="return confirm('Are you sure you want to apply the following changes?');">
                                 <input type="hidden" name="user_id" value="<?= $employee['user_id'] ?>">
                                 <select name="new_role">
@@ -92,10 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_role'])) {
                                     <option value="admin">Admin</option>
                                     <option value="content_manager">Content Manager</option>
                                     <option value="sales_manager">Sales Manager</option>
+                                    <option value="sales_associate">Sales Associate</option>
                                 </select>
                                 <textarea name="reason" placeholder="Reason for role change" required></textarea>
                                 <button type="submit" name="change_role">Apply Changes</button>
                             </form>
+                             <?php else: ?>
+                    <span>N/A </span>
+                <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

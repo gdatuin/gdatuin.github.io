@@ -46,20 +46,34 @@ try {
 
 <body id="profile">
 
+ <div class="elfsight-app-4114d580-7b3f-4432-b30a-d4699aac173d"></div>
+
 <?php include 'header.php'; ?>
 
-    <div class="profile-container">
-       
-        <h1>Welcome, <?= ($userData['first_name']); ?></h1>
-        <p>Email: <?=($userData['email']); ?></p>
-        <p>Username: <?=($userData['username']); ?></p>
- 
+<main class= "main-profile">
+<h2>Profile </h2>
+<div class="profile-container">
+    <form action="upload-profile-picture.php" method="post" enctype="multipart/form-data">
+    <label for="profile_picture">Profile Picture:</label>
+    <input type="file" name="profile_picture" id="profile_picture" required>
+    <input type="submit" value="Upload Picture" name="submit">
+</form>
 
-    </div>
+<h1>🟆 Welcome, <?= ($userData['first_name']); ?> 🟆</h1>
+    <p>Email: <?= ($userData['email']); ?></p>
+    <p>Username: <?= ($userData['username']); ?></p>
 
-    <form action="logout.php" method="post">
-        <input type="submit" name="logout" value="Logout">
-    </form>
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+        <a href="manage-employees.php" class="manage-employees-button">Manage Employees</a>
+    <?php endif; ?>
+</div>
 
+<form action="logout.php" method="post" class="logout-form">
+    <input type="submit" name="logout" value="Logout" class="logout-button">
+</form>
+    </main>
+
+    <?php include 'footer.php'; ?>
 </body>
 </html>
+

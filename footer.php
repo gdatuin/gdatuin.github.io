@@ -26,7 +26,7 @@
 			</nav>
             
             <p>Copyright © 2023 Gabriel Datuin</p>
-            <p>This is a work of fiction. This website is for personal use and is non-profit.</p>
+            <p>This is a work of fiction. This website is for educational use and is non-profit.</p>
             
 </footer>
 </html>

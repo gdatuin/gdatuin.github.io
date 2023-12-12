@@ -11,6 +11,14 @@ $typeFilter = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
 $sort = 'product_name';
 $order = 'ASC';
 
+$categories = [];
+try {
+    $categoryStmt = $db->query("SELECT * FROM categories");
+    $categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
 
 $sortOptions = [
     'product_name_asc' => ['field' => 'product_name', 'order' => 'ASC'],
@@ -27,14 +35,22 @@ if (array_key_exists($sortOption, $sortOptions)) {
     $order = $sortOptions[$sortOption]['order'];
 }
 
-$countSql = "SELECT COUNT(*) FROM products";
+$countSql = "SELECT COUNT(*) FROM products p LEFT JOIN categories c ON p.category_id = c.category_id";
+$paramsCount = [];
+
+if ($searchTerm) {
+    $countSql .= " WHERE (p.product_name LIKE :searchTerm OR c.category_name LIKE :searchTerm)";
+    $paramsCount[':searchTerm'] = '%' . $searchTerm . '%';
+}
+
 if ($typeFilter && $typeFilter != 'all') {
-    $countSql .= " WHERE product_type = :typeFilter";
+    $countSql .= ($searchTerm ? " AND" : " WHERE") . " c.category_name = :typeFilter";
+    $paramsCount[':typeFilter'] = $typeFilter;
 }
 
 $countStmt = $db->prepare($countSql);
-if ($typeFilter && $typeFilter != 'all') {
-    $countStmt->bindValue(':typeFilter', $typeFilter, PDO::PARAM_STR);
+foreach ($paramsCount as $key => $value) {
+    $countStmt->bindValue($key, $value);
 }
 $countStmt->execute();
 $totalProducts = $countStmt->fetchColumn();
@@ -46,21 +62,25 @@ $page = max($page, 1);
 $page = min($page, $totalPages); 
 $offset = ($page - 1) * $productsPerPage;
 
-$sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id";
+
+if ($offset < 0) {
+    $offset = 0; 
+}
+
+$sql = "SELECT p.product_id, p.product_name, p.description, p.price, p.inventory_count, p.image, c.category_name, COALESCE(AVG(r.rating), 0) AS average_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id LEFT JOIN categories c ON p.category_id = c.category_id";
 $params = [];
 
-
 if ($searchTerm) {
-    $sql .= " WHERE (p.product_name LIKE :searchTerm OR p.product_type LIKE :searchTerm)";
+    $sql .= " WHERE (p.product_name LIKE :searchTerm OR c.category_name LIKE :searchTerm)";
     $params[':searchTerm'] = '%' . $searchTerm . '%';
 }
 
-
 if ($typeFilter && $typeFilter != 'all') {
     $sql .= $searchTerm ? " AND" : " WHERE"; 
-    $sql .= " p.product_type = :typeFilter";
+    $sql .= " c.category_name = :typeFilter";
     $params[':typeFilter'] = $typeFilter;
 }
+
 
 
 $sql .= " GROUP BY p.product_id ORDER BY $sort $order LIMIT :limit OFFSET :offset";
@@ -146,38 +166,44 @@ try {
             <option value="rating_desc" <?php if ($sortOption == 'rating_desc') echo 'selected'; ?>>Rating (High to Low)</option>
         </select>
     </form>
-    <nav class="product-type-nav">
-    <a href="?type=all<?= $searchTerm ? '&search=' . urlencode($searchTerm) : '' ?>&sort=<?= urlencode($sortOption) ?>">All</a>
-    <a href="?type=Tops">Tops</a>
-    <a href="?type=Bottoms">Bottoms</a>
-    <a href="?type=AccessoriesandFootwear">Accessories & Footwear</a>
+   <nav class="product-type-nav">
+    <a href="?type=all<?= $searchTerm ? '&search=' . urlencode($searchTerm) : '' ?>&sort=<?= urlencode($sortOption) ?>">View All</a>
+    <?php foreach ($categories as $category): ?>
+        <a href="?type=<?= urlencode($category['category_name']) ?><?= $searchTerm ? '&search=' . urlencode($searchTerm) : '' ?>&sort=<?= urlencode($sortOption) ?>"><?= htmlspecialchars($category['category_name']) ?></a>
+    <?php endforeach; ?>
 </nav>
 </div>
 
 
         <div class="listOfProducts">
-            <?php foreach ($products as $product): ?>
-                <div class="productItem">
-                    <div class="productImage">
-                        <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>">
+    <?php if (empty($products)): ?>
+        <div class="no-results-found">
+            <p>No results found.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach ($products as $product): ?>
+            <div class="productItem">
+                <div class="productImage">
+                    <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>">
                         <img src="images/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
-                        </a>
-            </div>
-                    <div class="productDetails">
-                        <p>
+                    </a>
+                </div>
+                <div class="productDetails">
+                    <p>
                         <a href="product.php?id=<?= htmlspecialchars($product['product_id']) ?>"><?= htmlspecialchars($product['product_name']) ?></a>
                         <br>$<?= htmlspecialchars(number_format($product['price'], 2)) ?></br>
                     </p>
-                    </div>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
 
         <div class="pages">
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <a href="?page=<?= $i ?>&<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
-        <?php endfor; ?>
-    </div>
+    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+        <a href="?page=<?= $i ?>&<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+    <?php endfor; ?>
+</div>
 
     </main>
 

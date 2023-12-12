@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $imageFileName = null;
     
+    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     $userCaptcha = filter_input(INPUT_POST, 'captcha', FILTER_SANITIZE_STRING);
     if (empty($userCaptcha) || $userCaptcha != $_SESSION['captcha']) {
         
@@ -25,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: product.php?id=' . $formData['product_id']. '#submit-review-form');
         exit;
     }
+}
 
     
     

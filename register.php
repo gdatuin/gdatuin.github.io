@@ -92,7 +92,15 @@ try {
     <label for="confirm_password">Confirm Password:</label>
     <input type="password" id="confirm_password" name="confirm_password" required><br>
     </li>
+
+    <li>
+    <label for="captcha">Enter CAPTCHA:</label>
+                    <br><img src="captcha.php" alt="CAPTCHA">
+                    <br><input type="text" id="captcha" name="captcha" required>
+</li>
 </ul>
+
+
         <p class="center">
         <button type="submit" id="register_btn" class="formButton">Register</button>
         </p>
